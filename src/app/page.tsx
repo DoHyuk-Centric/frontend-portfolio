@@ -34,15 +34,15 @@ const links = [
 
 export default function Home() {
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-10">
+    <div className="mx-auto my-auto flex w-full max-w-3xl flex-col gap-10">
       <div className="flex flex-col gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight">
-          Hi, I&apos;m your name.
+        <h1 className="text-5xl text-center font-bold tracking-tight">
+          FrontEnd Developer
         </h1>
-        <p className="max-w-xl text-muted-foreground">
-          Welcome to my portfolio. Browse my resume, projects, and current
-          tasks using the sidebar.
-        </p>
+        <div className="mt-8 mx-auto text-2xl font-semibold text-muted-foreground">
+          <p className="text-start">좋은 코드란,</p>
+          <p className="text-xl">유지보수가 용이하며 안정성이 높은 코드를 의미합니다.</p>
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
