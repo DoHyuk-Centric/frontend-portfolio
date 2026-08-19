@@ -1,77 +1,53 @@
-import Link from "next/link";
-import { ArrowRight, FileText, FolderKanban, ListTodo } from "lucide-react";
-
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
+  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 
-const links = [
+const projects = [
   {
-    title: "이력서",
-    description: "요약, 경력 및 활동, 핵심 역량, 학력",
-    href: "/resume",
-    icon: FileText,
+    title: "프론트엔드 기본기",
+    description: "Props Drilling, ",
+    tags: ["가독성", "예측 가능성", "응집도", "결합도"],
   },
   {
-    title: "포트폴리오",
-    description: "기본기, 문제해결, 성능개선, 접근성",
-    href: "/portfolio",
-    icon: FolderKanban,
+    title: "Project Two",
+    description: "A short description of what this project does.",
+    tags: ["React", "Tailwind CSS"],
   },
   {
-    title: "Google Task",
-    description: "일정 관리",
-    href: "/task",
-    icon: ListTodo,
+    title: "Project Three",
+    description: "A short description of what this project does.",
+    tags: ["Node.js", "PostgreSQL"],
   },
 ];
 
-export default function Home() {
+export default function PortfolioPage() {
   return (
-    <div className="lg:mx-8 flex w-full flex-col items-center gap-10 text-center lg:items-stretch lg:text-start">
-      <div className="flex flex-col gap-3 mt-16">
-        <h1 className="text-5xl lg:text-6xl font-bold tracking-tight">
-          FrontEnd <br className="hidden lg:block"/> <span className="lg:ml-8">Developer</span>
-        </h1>
-        <div className="mt-8 text-xl lg:text-2xl font-semibold text-muted-foreground">
-          <p className="font-bold">좋은 코드란,</p>
-          <p className="text-lg lg:text-xl lg:ml-4">유지보수가 용이하며 안정성이 높은 코드를 의미합니다.</p>
-        </div>
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-2xl font-semibold tracking-tight">목차</h1>
       </div>
 
-      <div className="flex w-full max-w-100 text-start flex-col gap-4 lg:max-w-120">
-        {links.map((link) => (
-          <Card
-            key={link.title}
-            className="[--card-spacing:--spacing(3)] lg:[--card-spacing:--spacing(4)]"
-          >
+      <div className="grid gap-4 sm:grid-cols-2">
+        {projects.map((project) => (
+          <Card key={project.title}>
             <CardHeader>
-              <link.icon className="size-4 text-muted-foreground lg:size-5" />
-              <CardTitle className="text-sm lg:text-base">
-                {link.title}
-              </CardTitle>
-              <CardDescription className="text-xs lg:text-sm">
-                {link.description}
-              </CardDescription>
+              <CardTitle>{project.title}</CardTitle>
+              <CardDescription>{project.description}</CardDescription>
             </CardHeader>
-            <CardFooter>
-              <Link
-                href={link.href}
-                className={cn(
-                  buttonVariants({ variant: "secondary", size: "sm" }),
-                  "w-full lg:h-8 lg:text-sm"
-                )}
-              >
-                View {link.title}
-                <ArrowRight />
-              </Link>
-            </CardFooter>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {project.tags.map((tag) => (
+                  <Badge key={tag} variant="outline">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </CardContent>
           </Card>
         ))}
       </div>

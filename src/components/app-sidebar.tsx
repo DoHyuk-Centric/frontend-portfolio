@@ -3,13 +3,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Home,
-  FileText,
-  FolderKanban,
-  ListTodo,
-  PanelLeftIcon,
-} from "lucide-react";
+import { FolderKanban, ListTodo, PanelLeftIcon } from "lucide-react";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -34,20 +28,109 @@ import {
 } from "@/components/ui/sidebar";
 
 const navItems = [
-  { title: "Home", url: "/", icon: Home },
-  { title: "Resume", url: "/resume", icon: FileText },
-  { title: "Portfolio", url: "/portfolio", icon: FolderKanban },
+  { title: "Portfolio", url: "/", icon: FolderKanban },
   { title: "Task", url: "/task", icon: ListTodo },
 ];
+
+const portfolioOutline = [
+  {
+    title: "프론트엔드 기본",
+    href: "/basics",
+    items: [
+      { title: "가독성", href: "/basics/readability" },
+      { title: "예측 가능성", href: "/basics/predictability" },
+      { title: "응집도", href: "/basics/cohesion" },
+      { title: "결합도", href: "/basics/coupling" },
+    ],
+  },
+  {
+    title: "Kanto",
+    href: "/kanto",
+    items: [
+      { title: "구조", href: "/kanto/structure" },
+      { title: "기술 선택", href: "/kanto/tech-stack" },
+      { title: "문제해결", href: "/kanto/problem-solving" },
+    ],
+  },
+  {
+    title: "DoHyuk.dev",
+    href: "/dohyuk-dev",
+    items: [
+      { title: "구조", href: "/dohyuk-dev/structure" },
+      { title: "기술 선택", href: "/dohyuk-dev/tech-stack" },
+      { title: "문제해결", href: "/dohyuk-dev/problem-solving" },
+      { title: "접근성", href: "/dohyuk-dev/accessibility" },
+    ],
+  },
+];
+
+function PortfolioOutlineLink({
+  href,
+  title,
+  className,
+}: {
+  href: string;
+  title: string;
+  className?: string;
+}) {
+  const pathname = usePathname();
+  const isActive = pathname === href;
+
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "relative pl-2 hover:text-foreground",
+        isActive ? "text-foreground" : "text-muted-foreground",
+        className
+      )}
+    >
+      {isActive && (
+        <span className="absolute top-1/2 left-0 h-3 w-0.5 -translate-y-1/2 rounded-full bg-foreground" />
+      )}
+      {title}
+    </Link>
+  );
+}
+
+function PortfolioOutline() {
+  return (
+    <nav className="flex flex-col gap-4 p-4">
+      <PortfolioOutlineLink
+        href="/"
+        title="목차"
+        className="text-sm font-semibold"
+      />
+      {portfolioOutline.map((group) => (
+        <div key={group.title} className="flex flex-col gap-1.5">
+          <PortfolioOutlineLink
+            href={group.href}
+            title={group.title}
+            className="text-sm font-semibold"
+          />
+          <ul className="flex flex-col gap-1 pl-3 text-sm">
+            {group.items.map((item) => (
+              <li key={item.title + item.href}>
+                <PortfolioOutlineLink href={item.href} title={item.title} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </nav>
+  );
+}
 
 export function AppSidebar() {
   const pathname = usePathname();
   const isMobile = useIsMobile();
 
   const activeItem =
-    navItems.find((item) =>
-      item.url === "/" ? pathname === "/" : pathname.startsWith(item.url)
-    ) ?? navItems[0];
+    navItems.find(
+      (item) => item.url !== "/" && pathname.startsWith(item.url)
+    ) ??
+    navItems.find((item) => item.url === "/") ??
+    navItems[0];
 
   const showContentPanel = activeItem.title === "Portfolio";
 
@@ -96,9 +179,7 @@ export function AppSidebar() {
                   {activeItem.title} 목록
                 </SheetDescription>
               </SheetHeader>
-              <div className="flex flex-1 items-center justify-center p-4 text-sm text-muted-foreground">
-                Coming soon
-              </div>
+              <PortfolioOutline />
             </SheetContent>
           </Sheet>
         )}
@@ -164,9 +245,7 @@ export function AppSidebar() {
               </span>
             </SidebarHeader>
             <SidebarContent>
-              <div className="flex flex-1 items-center justify-center p-4 text-sm text-muted-foreground">
-                Coming soon
-              </div>
+              <PortfolioOutline />
             </SidebarContent>
           </Sidebar>
         )}

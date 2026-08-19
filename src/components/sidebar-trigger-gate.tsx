@@ -7,7 +7,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export function SidebarTriggerGate() {
   const pathname = usePathname();
-  const showTrigger = pathname.startsWith("/portfolio");
+  const showTrigger = !pathname.startsWith("/task");
 
   if (!showTrigger) {
     return null;
