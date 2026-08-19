@@ -14,9 +14,9 @@ export function SidebarTriggerGate() {
   }
 
   return (
-    <>
-      <SidebarTrigger className="hidden lg:flex" />
-      <Separator orientation="vertical" className="hidden h-4! lg:block" />
-    </>
+    <div className="hidden items-center gap-2 lg:flex">
+      <SidebarTrigger />
+      <Separator orientation="vertical" className="h-4!" />
+    </div>
   );
 }

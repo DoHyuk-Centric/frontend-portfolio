@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FolderKanban, ListTodo, PanelLeftIcon } from "lucide-react";
 
+import { portfolioSections } from "@/data/portfolio-sections";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -30,38 +31,6 @@ import {
 const navItems = [
   { title: "Portfolio", url: "/", icon: FolderKanban },
   { title: "Task", url: "/task", icon: ListTodo },
-];
-
-const portfolioOutline = [
-  {
-    title: "프론트엔드 기본",
-    href: "/basics",
-    items: [
-      { title: "가독성", href: "/basics/readability" },
-      { title: "예측 가능성", href: "/basics/predictability" },
-      { title: "응집도", href: "/basics/cohesion" },
-      { title: "결합도", href: "/basics/coupling" },
-    ],
-  },
-  {
-    title: "Kanto",
-    href: "/kanto",
-    items: [
-      { title: "구조", href: "/kanto/structure" },
-      { title: "기술 선택", href: "/kanto/tech-stack" },
-      { title: "문제해결", href: "/kanto/problem-solving" },
-    ],
-  },
-  {
-    title: "DoHyuk.dev",
-    href: "/dohyuk-dev",
-    items: [
-      { title: "구조", href: "/dohyuk-dev/structure" },
-      { title: "기술 선택", href: "/dohyuk-dev/tech-stack" },
-      { title: "문제해결", href: "/dohyuk-dev/problem-solving" },
-      { title: "접근성", href: "/dohyuk-dev/accessibility" },
-    ],
-  },
 ];
 
 function PortfolioOutlineLink({
@@ -101,17 +70,20 @@ function PortfolioOutline() {
         title="목차"
         className="text-sm font-semibold"
       />
-      {portfolioOutline.map((group) => (
-        <div key={group.title} className="flex flex-col gap-1.5">
+      {portfolioSections.map((section) => (
+        <div key={section.slug} className="flex flex-col gap-1.5">
           <PortfolioOutlineLink
-            href={group.href}
-            title={group.title}
+            href={`/${section.slug}`}
+            title={section.title}
             className="text-sm font-semibold"
           />
           <ul className="flex flex-col gap-1 pl-3 text-sm">
-            {group.items.map((item) => (
-              <li key={item.title + item.href}>
-                <PortfolioOutlineLink href={item.href} title={item.title} />
+            {section.items.map((item) => (
+              <li key={item.slug}>
+                <PortfolioOutlineLink
+                  href={`/${section.slug}/${item.slug}`}
+                  title={item.title}
+                />
               </li>
             ))}
           </ul>

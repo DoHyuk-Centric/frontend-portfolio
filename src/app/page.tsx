@@ -6,24 +6,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { portfolioSections } from "@/data/portfolio-sections";
 
-const projects = [
-  {
-    title: "프론트엔드 기본기",
-    description: "Props Drilling, ",
-    tags: ["가독성", "예측 가능성", "응집도", "결합도"],
-  },
-  {
-    title: "Project Two",
-    description: "A short description of what this project does.",
-    tags: ["React", "Tailwind CSS"],
-  },
-  {
-    title: "Project Three",
-    description: "A short description of what this project does.",
-    tags: ["Node.js", "PostgreSQL"],
-  },
-];
+const sectionDescriptions: Record<string, string> = {
+  fundamentals: "Props Drilling, ",
+};
 
 export default function PortfolioPage() {
   return (
@@ -33,17 +20,19 @@ export default function PortfolioPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        {projects.map((project) => (
-          <Card key={project.title}>
+        {portfolioSections.map((section) => (
+          <Card key={section.slug}>
             <CardHeader>
-              <CardTitle>{project.title}</CardTitle>
-              <CardDescription>{project.description}</CardDescription>
+              <CardTitle>{section.title}</CardTitle>
+              <CardDescription>
+                {sectionDescriptions[section.slug] ?? "작성 중입니다."}
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
-                {project.tags.map((tag) => (
-                  <Badge key={tag} variant="outline">
-                    {tag}
+                {section.items.map((item) => (
+                  <Badge key={item.slug} variant="outline">
+                    {item.title}
                   </Badge>
                 ))}
               </div>
