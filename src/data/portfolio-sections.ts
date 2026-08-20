@@ -9,25 +9,6 @@ export type PortfolioSection = PortfolioLeaf & {
 
 export const portfolioSections: PortfolioSection[] = [
   {
-    title: "Kanto",
-    slug: "kanto",
-    items: [
-      { title: "구조", slug: "structure" },
-      { title: "기술 선택", slug: "tech-stack" },
-      { title: "문제해결", slug: "problem-solving" },
-    ],
-  },
-  {
-    title: "DoHyuk.dev",
-    slug: "dohyuk-dev",
-    items: [
-      { title: "구조", slug: "structure" },
-      { title: "기술 선택", slug: "tech-stack" },
-      { title: "문제해결", slug: "problem-solving" },
-      { title: "접근성", slug: "accessibility" },
-    ],
-  },
-  {
     title: "Fundamentals",
     slug: "fundamentals",
     items: [

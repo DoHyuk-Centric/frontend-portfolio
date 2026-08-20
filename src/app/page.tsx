@@ -16,7 +16,7 @@ export default function PortfolioPage() {
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight">목차</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Project</h1>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">

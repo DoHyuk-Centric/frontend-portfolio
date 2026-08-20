@@ -67,7 +67,7 @@ function PortfolioOutline() {
     <nav className="flex flex-col gap-4 p-4">
       <PortfolioOutlineLink
         href="/"
-        title="목차"
+        title="Project"
         className="text-sm font-semibold"
       />
       {portfolioSections.map((section) => (
