@@ -178,6 +178,17 @@ export default function PredictabilityPage() {
               </p>
               <CodeBlock
                 lang="tsx"
+                code={`// After: (admin)/layout.tsx
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <AdminGuard>
+      <AdminShell>{children}</AdminShell>
+    </AdminGuard>
+    );
+}`}
+              />
+              <CodeBlock
+                lang="tsx"
                 code={`// After: (admin)/_components/AdminShell.tsx
 export default async function AdminShell({ children }: { children: React.ReactNode }) {
   const admin = createAdminClient();
@@ -193,17 +204,6 @@ export default async function AdminShell({ children }: { children: React.ReactNo
         {children}
       </main>
     </div>
-  );
-}`}
-              />
-              <CodeBlock
-                lang="tsx"
-                code={`// After: (admin)/layout.tsx
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <AdminGuard>
-      <AdminShell>{children}</AdminShell>
-    </AdminGuard>
   );
 }`}
               />
