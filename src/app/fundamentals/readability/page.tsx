@@ -132,6 +132,9 @@ export default async function AdminGuard({ children }: { children: React.ReactNo
           💬 하나의 파일과 코드에서 너무 많은 맥락을 다루면 읽기 힘들어집니다.
           따라서 맥락을 줄이기 위해서 Wrapper 또는 HOC로 해결하곤 합니다.
         </aside>
+        <div>
+          공사중
+        </div>
         </CollapsibleSection>
       </section>
     </SectionStub>
