@@ -1,16 +1,5 @@
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { portfolioSections } from "@/data/portfolio-sections";
-
-const sectionDescriptions: Record<string, string> = {
-  fundamentals: "Props Drilling, ",
-};
+import { ProjectContainer } from "./_components/project-container";
+import { projects } from "@/data/projects";
 
 export default function PortfolioPage() {
   return (
@@ -20,24 +9,8 @@ export default function PortfolioPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        {portfolioSections.map((section) => (
-          <Card key={section.slug}>
-            <CardHeader>
-              <CardTitle>{section.title}</CardTitle>
-              <CardDescription>
-                {sectionDescriptions[section.slug] ?? "작성 중입니다."}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
-                {section.items.map((item) => (
-                  <Badge key={item.slug} variant="outline">
-                    {item.title}
-                  </Badge>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+        {projects.map((project) => (
+          <ProjectContainer key={project.title} project={project} />
         ))}
       </div>
     </div>
