@@ -25,14 +25,19 @@ function ProjectLogo({ project }: { project: Project }) {
 
 export function ProjectModalHeader({ project }: { project: Project }) {
   return (
-    <div className="flex items-center gap-4">
-      <ProjectLogo project={project} />
-      <div className="flex flex-col gap-1">
-        <h2 className="text-lg font-semibold text-foreground">
-          {project.title}
-        </h2>
-        <p className="text-sm text-muted-foreground">{project.description}</p>
+    <div className="flex flex-col gap-2 px-2">
+      <div className="flex items-center gap-4">
+        <ProjectLogo project={project} />
+        <div className="flex flex-col gap-1">
+          <h2 className="text-lg font-semibold text-foreground">
+            {project.title}
+          </h2>
+          <span className="text-sm text-muted-foreground">
+            {project.period}
+          </span>
+        </div>
       </div>
+      <p className="text-sm text-muted-foreground px-2">{project.description}</p>
     </div>
   );
 }
