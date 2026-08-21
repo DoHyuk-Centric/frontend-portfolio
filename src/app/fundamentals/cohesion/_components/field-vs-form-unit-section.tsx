@@ -118,7 +118,7 @@ if (error) {
           중복 여부를 알 수 있게 되었습니다.
         </p>
         <h3 className="font-medium text-foreground mt-2">트레이드 오프</h3>
-        <p className="text-sm text-muted-foreground px-4">
+        <div className="text-sm text-muted-foreground px-4">
           폼 단위 검증에선 없던 비동기 상태 관리 비용이 생겼습니다.
           <br />
           <br />
@@ -148,7 +148,7 @@ if (error) {
               </p>
             </li>
           </ul>
-        </p>
+        </div>
       </div>
     </CollapsibleSection>
   );

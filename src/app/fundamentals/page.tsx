@@ -18,7 +18,7 @@ export default function FundamentalsPage() {
           <ListSection
             title={"예측 가능성"}
             href="/fundamentals/predictability"
-            content={["같은 종류의 함수 반환 타입 통일", "이름으로 동작 예측"]}
+            content={["이름으로 동작 예측"]}
           />
           <ListSection
             title={"응집도"}
@@ -28,7 +28,7 @@ export default function FundamentalsPage() {
           <ListSection
             title={"결합도"}
             href="/fundamentals/coupling"
-            content={["Props Drilling 제거", "책임 분리"]}
+            content={["매직넘버 7 기준으로 필드단위 책임분리"]}
           />
         </ul>
       </div>

@@ -17,8 +17,9 @@ export default function ListSection({
         </Link>
       </h3>
       <ul className="mt-1 flex list-[circle] flex-col gap-1 ps-4 text-sm text-muted-foreground">
-        <li>{content[0]}</li>
-        <li>{content[1]}</li>
+        {content.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
       </ul>
     </li>
   );

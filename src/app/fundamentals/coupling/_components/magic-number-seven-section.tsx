@@ -46,7 +46,7 @@ export function CreateJobFormPageOne({ title, setTitle, employeeType, /* ...나�
 
       <div className="flex flex-col gap-2 px-2">
         <h3 className="font-medium text-foreground">원칙과 기준</h3>
-        <p className="text-sm text-muted-foreground px-4">
+        <div className="text-sm text-muted-foreground px-4">
           SOLID 원칙중에 SOI와 사람은 한 번에 최대 7개 내외의 정보만 기억할 수
           있다고 말한 조지 밀러 7의 법칙을 근거로 삼아 리팩토링을 진행했습니다.
           <ul className="flex flex-col gap-4 my-4">
@@ -78,7 +78,7 @@ export function CreateJobFormPageOne({ title, setTitle, employeeType, /* ...나�
               <p className="px-2">각 필드를 Props를 7개 이하로 담아 구성</p>
             </li>
           </ul>
-        </p>
+        </div>
       </div>
 
       <div className="flex flex-col gap-2 px-2">

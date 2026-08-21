@@ -24,7 +24,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { PanelLeftIcon } from "lucide-react"
-import { SidebarTriggerGate } from "@/components/sidebar-trigger-gate";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -343,7 +342,6 @@ function SidebarHeader({
       {...props}
     >
       <div className="flex min-w-0 flex-col gap-2">{children}</div>
-      <SidebarTriggerGate />
     </div>
   )
 }
