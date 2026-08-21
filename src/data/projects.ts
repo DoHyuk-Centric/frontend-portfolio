@@ -6,8 +6,10 @@ export type Project = {
   team: boolean;
   /** Project duration, formatted as "YYYY.MM ~ YYYY.MM". */
   period: string;
-  /** Path to the project logo shown next to the title in the modal header. */
+  /** Path to the project logo image shown on the project card. */
   logo?: string;
+  /** Path to the project favicon shown next to the title in the modal header. */
+  icon?: string;
 };
 
 export const projects: Project[] = [
@@ -18,7 +20,8 @@ export const projects: Project[] = [
     techStack: ["TypeScript", "Next.js"],
     team: true,
     period: "2024.01 ~ 2024.06",
-    logo: "/project/kanto/favicon.ico",
+    logo: "/project/kanto/kantoLogo.png",
+    icon: "/project/kanto/kanto-icon-192.png",
   },
   {
     slug: "dohyuk-dev",

@@ -4,11 +4,11 @@ import { ImageIcon } from "lucide-react";
 import type { Project } from "@/data/projects";
 
 function ProjectLogo({ project }: { project: Project }) {
-  if (project.logo) {
+  if (project.icon) {
     return (
       <Image
-        src={project.logo}
-        alt={`${project.title} 로고`}
+        src={project.icon}
+        alt={`${project.title} 아이콘`}
         width={56}
         height={56}
         className="size-14 shrink-0 rounded-lg object-cover"

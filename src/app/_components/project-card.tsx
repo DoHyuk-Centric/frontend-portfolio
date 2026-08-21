@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { ImageIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +13,20 @@ import {
 import type { Project } from "@/data/projects";
 import { cn } from "@/lib/utils";
 
-function HeroImage() {
+function HeroImage({ project }: { project: Project }) {
+  if (project.logo) {
+    return (
+      <div className="relative aspect-video bg-muted p-6">
+        <Image
+          src={project.logo}
+          alt={`${project.title} 로고`}
+          fill
+          className="object-contain"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="flex aspect-video items-center justify-center bg-muted text-muted-foreground">
       <ImageIcon className="size-8" />
@@ -32,7 +46,7 @@ export function ProjectCard({
       onClick={onClick}
       className="cursor-pointer gap-3 overflow-hidden pt-0 transition-shadow hover:shadow-md hover:ring-foreground/20 active:shadow-none"
     >
-      <HeroImage />
+      <HeroImage project={project} />
       <CardHeader>
         <CardTitle>{project.title}</CardTitle>
         <CardAction>
