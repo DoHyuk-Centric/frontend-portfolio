@@ -6,13 +6,15 @@ import type { Project } from "@/data/projects";
 function ProjectLogo({ project }: { project: Project }) {
   if (project.icon) {
     return (
-      <Image
-        src={project.icon}
-        alt={`${project.title} 아이콘`}
-        width={56}
-        height={56}
-        className="size-14 shrink-0 rounded-lg object-cover"
-      />
+      <div className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-white p-2">
+        <Image
+          src={project.icon}
+          alt={`${project.title} 아이콘`}
+          width={56}
+          height={56}
+          className="size-full object-contain"
+        />
+      </div>
     );
   }
 

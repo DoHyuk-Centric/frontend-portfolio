@@ -30,6 +30,8 @@ export const projects: Project[] = [
     techStack: ["JavaScript"],
     team: false,
     period: "2024.01 ~ 2024.06",
+    logo: "/project/dohyuk-dev/catpaw-logo.webp",
+    icon: "/project/dohyuk-dev/catpaw-logo.webp",
   },
   {
     slug: "gentle-lion",
