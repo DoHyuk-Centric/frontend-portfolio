@@ -40,6 +40,8 @@ export const projects: Project[] = [
     techStack: ["JavaScript", "monorepo"],
     team: true,
     period: "2024.01 ~ 2024.06",
+    logo: "/project/gentle-lion/gentle-monster-logo.svg",
+    icon: "/project/gentle-lion/GentleLionIcon.svg",
   },
   {
     slug: "eslint-kr",
