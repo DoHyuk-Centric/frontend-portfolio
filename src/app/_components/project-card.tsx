@@ -22,6 +22,7 @@ function HeroImage({ project }: { project: Project }) {
           alt={`${project.title} 로고`}
           fill
           className="object-contain"
+          priority
         />
       </div>
     );

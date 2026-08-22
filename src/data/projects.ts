@@ -20,8 +20,8 @@ export const projects: Project[] = [
     techStack: ["TypeScript", "Next.js"],
     team: true,
     period: "2024.01 ~ 2024.06",
-    logo: "/project/kanto/kantoLogo.png",
-    icon: "/project/kanto/kanto-icon-192.png",
+    logo: "/project/kanto/kantoLogo.webp",
+    icon: "/project/kanto/kanto-icon-192.webp",
   },
   {
     slug: "dohyuk-dev",

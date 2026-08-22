@@ -12,9 +12,9 @@ export function KantoModalContent({ project }: { project: Project }) {
     <div className="flex flex-col gap-6">
       <ProjectImageCarousel
         images={[
-          { src: "/project/kanto/KantoMain.png", alt: "Kanto 대표 이미지 1" },
-          { src: "/project/kanto/KantoLogin.png", alt: "Kanto 대표 이미지 2" },
-          { src: "/project/kanto/KantoAdmin.png", alt: "Kanto 대표 이미지 3" },
+          { src: "/project/kanto/KantoMain.webp", alt: "Kanto 대표 이미지 1" },
+          { src: "/project/kanto/KantoLogin.webp", alt: "Kanto 대표 이미지 2" },
+          { src: "/project/kanto/KantoAdmin.webp", alt: "Kanto 대표 이미지 3" },
         ]}
       />
 
@@ -123,7 +123,7 @@ export function KantoModalContent({ project }: { project: Project }) {
         </h3>
         <div className="text-base text-muted-foreground px-12 flex flex-col gap-4">
           <Image
-            src="/project/kanto/egress-per-day.png"
+            src="/project/kanto/egress-per-day.webp"
             alt="Supabase Egress per day 대시보드, Storage Egress가 하루 390MB로 급증한 구간이 표시되어 있음"
             width={1175}
             height={327}
@@ -233,7 +233,7 @@ export function KantoModalContent({ project }: { project: Project }) {
                   <ul className="list-[square] pl-4 text-sm mt-1 flex flex-col gap-1">
                     <li>
                       Gemini → Groq → Cerebras 순차 폴백 구조로 LLM 장애 시에도
-                      응답을 지속할 수 있도록 개선
+                      응답을 지속할 수 있도록 구현
                     </li>
                     <li>대화 기록은 LocalStorage에 세션 단위로 저장</li>
                   </ul>
