@@ -1,6 +1,9 @@
 import { addDays, format, startOfDay } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 import type { CalendarEvent } from "@/lib/calendar-events";
+
+const TIME_ZONE = "Asia/Seoul";
 
 type GoogleCalendarResponse = {
   items?: {
@@ -50,7 +53,7 @@ export async function GET(request: Request) {
   googleUrl.searchParams.set("key", apiKey);
   googleUrl.searchParams.set("timeMin", timeMin);
   googleUrl.searchParams.set("timeMax", timeMax);
-  googleUrl.searchParams.set("timeZone", "Asia/Seoul");
+  googleUrl.searchParams.set("timeZone", TIME_ZONE);
   googleUrl.searchParams.set("singleEvents", "true");
   googleUrl.searchParams.set("orderBy", "startTime");
   googleUrl.searchParams.set("maxResults", "250");
@@ -105,11 +108,11 @@ export async function GET(request: Request) {
         dayCount++;
       }
     } else if (item.start.dateTime) {
-      const startedAt = new Date(item.start.dateTime);
+      const startedAt = toZonedTime(new Date(item.start.dateTime), TIME_ZONE);
 
       let endedAt = startedAt;
       if (item.end?.dateTime) {
-        endedAt = new Date(item.end.dateTime);
+        endedAt = toZonedTime(new Date(item.end.dateTime), TIME_ZONE);
       }
 
       const startDateKey = format(startedAt, "yyyy-MM-dd");
