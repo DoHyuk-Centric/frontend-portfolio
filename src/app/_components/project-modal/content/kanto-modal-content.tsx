@@ -19,7 +19,6 @@ export function KantoModalContent({ project }: { project: Project }) {
       />
 
       <ProjectModalHeader project={project} />
-
       <div className="flex flex-col gap-2">
         <div className="flex gap-4 justify-center">
           <Link
@@ -95,16 +94,32 @@ export function KantoModalContent({ project }: { project: Project }) {
         <div className="text-base text-muted-foreground px-12">
           <ul className="flex list-disc flex-col gap-3 pl-4">
             <li>
-              <p>
-                메인, 프로필, 채팅, AI 챗봇, 관리자 운영관리 페이지 기능 개발 및
-                공통 UI 유틸리티 제작
-              </p>
+              <p>SEO 메타데이터 최적화 상세 페이지별 동적 OG 이미지 생성</p>
+            </li>
+            <li>
+              채팅 플로우(1:1 채팅)
+              <ul className="list-[square] pl-4 text-sm mt-1 flex flex-col gap-1">
+                <li>
+                  채팅 타입ㆍZustand 스토어 설계 ~ 실시간 메시지ㆍ읽음
+                  처리ㆍ도배 방지ㆍ메시지 페이지네이션 구현
+                </li>
+              </ul>
+            </li>
+            <li>
+              운영 관리 플로우(관리자)
+              <ul className="list-[square] pl-4 text-sm mt-1 flex flex-col gap-1">
+                <li>
+                  채팅/커뮤니티에서 발생하는 문제를 추적할 수 있도록 관리자
+                  감사 로그 구현
+                </li>
+                <li>
+                  금칙어/스팸/도배 등 운영 관리 측면에서 바뀔 수 있는 부분을
+                  프론트 영역에서 변경이 가능하도록 구현
+                </li>
+              </ul>
             </li>
             <li>
               <p>공지사항 반응형 및 플로팅 버튼 UI 제작</p>
-            </li>
-            <li>
-              <p>SEO 메타데이터 최적화 상세 페이지별 동적 OG 이미지 생성</p>
             </li>
             <li>
               <p>
