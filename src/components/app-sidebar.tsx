@@ -31,7 +31,7 @@ import {
 
 const navItems = [
   { title: "Portfolio", url: "/", icon: FolderKanban },
-  { title: "Task", url: "/task", icon: ListTodo },
+  { title: "Calendar", url: "/calendar", icon: ListTodo },
 ];
 
 function PortfolioOutlineLink({
