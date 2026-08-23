@@ -19,7 +19,14 @@ export type CarouselImage = {
   alt: string;
 };
 
-export function ProjectImageCarousel({ images }: { images: CarouselImage[] }) {
+export function ProjectImageCarousel({
+  images,
+  aspectRatio = "2560/1600",
+}: {
+  images: CarouselImage[];
+  /** CSS aspect-ratio value for each slide, e.g. "1920/1080". */
+  aspectRatio?: string;
+}) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
 
@@ -40,10 +47,14 @@ export function ProjectImageCarousel({ images }: { images: CarouselImage[] }) {
                   alt={image.alt}
                   width={2560}
                   height={1600}
-                  className="aspect-2560/1600 w-full rounded-lg object-cover"
+                  style={{ aspectRatio }}
+                  className="w-full rounded-lg object-cover"
                 />
               ) : (
-                <div className="flex aspect-2560/1600 w-full flex-col items-center justify-center gap-2 rounded-lg bg-muted text-muted-foreground">
+                <div
+                  style={{ aspectRatio }}
+                  className="flex w-full flex-col items-center justify-center gap-2 rounded-lg bg-muted text-muted-foreground"
+                >
                   <ImageIcon className="size-8" />
                   <span className="text-xs">{image.alt}</span>
                 </div>

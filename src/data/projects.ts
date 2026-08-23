@@ -50,5 +50,7 @@ export const projects: Project[] = [
     techStack: ["TypeaScript", "React"],
     team: false,
     period: "2024.01 ~ 2024.06",
+    logo: "/project/eslint-kr/eslint-kr-icon.svg",
+    icon: "/project/eslint-kr/eslint-kr-icon.svg",
   },
 ];
