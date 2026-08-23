@@ -8,6 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { Project } from "@/data/projects";
+import { dancingScript } from "@/lib/fonts";
 
 import { DohyukDevModalContent } from "./content/dohyuk-dev-modal-content";
 import { EslintKrModalContent } from "./content/eslint-kr-modal-content";
@@ -42,7 +43,9 @@ export function ProjectModal({
           <DialogTitle>{project.title}</DialogTitle>
           <DialogDescription>{project.description}</DialogDescription>
         </DialogHeader>
-        <div className="h-10 shrink-0 border-b flex items-center pl-6 font-semibold text-[#111111]">
+        <div
+          className={`${dancingScript.className} h-10 shrink-0 border-b flex items-center pl-6 text-lg text-[#111111]`}
+        >
           Project Details
         </div>
         <div className="flex-1 overflow-y-auto px-6 pb-6 pt-6">

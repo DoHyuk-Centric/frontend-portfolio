@@ -4,6 +4,8 @@ export type Project = {
   description: string;
   techStack: string[];
   team: boolean;
+  /** Number of people on the project, shown next to the title in the modal header (e.g. "Kanto(4인)"). Omit if unknown. */
+  teamSize?: number;
   /** Project duration, formatted as "YYYY.MM ~ YYYY.MM". */
   period: string;
   /** Path to the project logo image shown on the project card. */
@@ -19,6 +21,7 @@ export const projects: Project[] = [
     description: "필리핀 생활 플랫폼",
     techStack: ["TypeScript", "Next.js"],
     team: true,
+    teamSize: 4,
     period: "2024.01 ~ 2024.06",
     logo: "/project/kanto/kantoLogo.webp",
     icon: "/project/kanto/kanto-icon-192.webp",
@@ -39,6 +42,7 @@ export const projects: Project[] = [
     description: "젠틀 몬스터 클론코딩",
     techStack: ["JavaScript", "monorepo"],
     team: true,
+    teamSize: 3,
     period: "2024.01 ~ 2024.06",
     logo: "/project/gentle-lion/gentle-monster-logo.svg",
     icon: "/project/gentle-lion/GentleLionIcon.svg",

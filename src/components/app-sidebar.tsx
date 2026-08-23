@@ -7,6 +7,7 @@ import { FolderKanban, ListTodo, PanelLeftIcon } from "lucide-react";
 
 import { portfolioSections } from "@/data/portfolio-sections";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { fraunces } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -68,14 +69,14 @@ function PortfolioOutline() {
       <PortfolioOutlineLink
         href="/"
         title="Project"
-        className="text-sm font-semibold"
+        className={cn(fraunces.className, "text-base font-semibold")}
       />
       {portfolioSections.map((section) => (
         <div key={section.slug} className="flex flex-col gap-1.5">
           <PortfolioOutlineLink
             href={`/${section.slug}`}
             title={section.title}
-            className="text-sm font-semibold"
+            className={cn(fraunces.className, "text-base font-semibold")}
           />
           <ul className="flex flex-col gap-1 pl-3 text-sm">
             {section.items.map((item) => (
@@ -125,7 +126,7 @@ export function AppSidebar() {
                 )}
               >
                 <item.icon className="size-5" />
-                <span>{item.title}</span>
+                <span className={fraunces.className}>{item.title}</span>
               </Link>
             );
           })}
@@ -146,7 +147,9 @@ export function AppSidebar() {
             </SheetTrigger>
             <SheetContent side="bottom" className="max-h-[70vh]">
               <SheetHeader>
-                <SheetTitle>{activeItem.title}</SheetTitle>
+                <SheetTitle className={fraunces.className}>
+                  {activeItem.title}
+                </SheetTitle>
                 <SheetDescription className="sr-only">
                   {activeItem.title} 목록
                 </SheetDescription>
@@ -212,7 +215,12 @@ export function AppSidebar() {
         {showContentPanel && (
           <Sidebar collapsible="none" className="hidden flex-1 lg:flex">
             <SidebarHeader className="border-b p-4">
-              <span className="text-base font-medium text-foreground">
+              <span
+                className={cn(
+                  fraunces.className,
+                  "text-xl text-foreground"
+                )}
+              >
                 {activeItem.title}
               </span>
             </SidebarHeader>

@@ -33,6 +33,11 @@ export function ProjectModalHeader({ project }: { project: Project }) {
         <div className="flex flex-col gap-1">
           <h2 className="text-lg font-semibold text-foreground">
             {project.title}
+            {project.teamSize && (
+              <span className="text-blue-500 text-sm">
+                {" "}({project.teamSize}인)
+              </span>
+            )}
           </h2>
           <span className="text-sm text-muted-foreground">
             {project.period}
