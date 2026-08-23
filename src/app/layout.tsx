@@ -21,13 +21,21 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const basePath = process.env.GITHUB_ACTIONS === "true" ? "/frontend-portfolio" : "";
+
 export const metadata: Metadata = {
   title: "Portfolio",
   description: "Personal portfolio site",
   icons: {
     icon: [
-      { url: "/favicon-light.png", media: "(prefers-color-scheme: light)" },
-      { url: "/favicon-dark.png", media: "(prefers-color-scheme: dark)" },
+      {
+        url: `${basePath}/favicon-light.png`,
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: `${basePath}/favicon-dark.png`,
+        media: "(prefers-color-scheme: dark)",
+      },
     ],
   },
 };
