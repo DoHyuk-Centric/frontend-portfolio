@@ -7,7 +7,8 @@ const nextConfig: NextConfig = {
   output: "export",
   basePath,
   images: {
-    unoptimized: true,
+    loader: "custom",
+    loaderFile: "./image-loader.ts",
   },
 };
 
