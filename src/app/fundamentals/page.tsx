@@ -13,7 +13,7 @@ export default function FundamentalsPage() {
           <ListSection
             title={"가독성"}
             href="/fundamentals/readability"
-            content={["코드 맥락 최소화", "코드 읽힘 순서"]}
+            content={["코드 맥락 최소화"]}
           />
           <ListSection
             title={"예측 가능성"}
