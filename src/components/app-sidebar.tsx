@@ -3,7 +3,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FolderKanban, ListTodo, PanelLeftIcon } from "lucide-react";
+import { FolderKanban, House, ListTodo, PanelLeftIcon } from "lucide-react";
 
 import { portfolioSections } from "@/data/portfolio-sections";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -30,7 +30,8 @@ import {
 } from "@/components/ui/sidebar";
 
 const navItems = [
-  { title: "Portfolio", url: "/", icon: FolderKanban },
+  { title: "Home", url: "/home", icon: House },
+  { title: "Project", url: "/", icon: FolderKanban },
   { title: "Calendar", url: "/calendar", icon: ListTodo },
 ];
 
@@ -105,7 +106,7 @@ export function AppSidebar() {
     navItems.find((item) => item.url === "/") ??
     navItems[0];
 
-  const showContentPanel = activeItem.title === "Portfolio";
+  const showContentPanel = activeItem.title === "Project";
 
   if (isMobile) {
     return (

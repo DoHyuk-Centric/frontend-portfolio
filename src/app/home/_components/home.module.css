@@ -1,0 +1,57 @@
+@keyframes ridgeDrift1 {
+  from { transform: translateY(-5px); }
+  to { transform: translateY(3px); }
+}
+@keyframes ridgeDrift2 {
+  from { transform: translateY(-10px); }
+  to { transform: translateY(7px); }
+}
+@keyframes ridgeDrift3 {
+  from { transform: translateY(-18px); }
+  to { transform: translateY(12px); }
+}
+@keyframes ridgeDrift4 {
+  from { transform: translateY(-28px); }
+  to { transform: translateY(18px); }
+}
+@keyframes ridgeDrift5 {
+  from { transform: translateY(-42px); }
+  to { transform: translateY(28px); }
+}
+
+.ridge1 { animation: ridgeDrift1 linear both; animation-timeline: scroll(root); animation-range: 0 100%; }
+.ridge2 { animation: ridgeDrift2 linear both; animation-timeline: scroll(root); animation-range: 0 100%; }
+.ridge3 { animation: ridgeDrift3 linear both; animation-timeline: scroll(root); animation-range: 0 100%; }
+.ridge4 { animation: ridgeDrift4 linear both; animation-timeline: scroll(root); animation-range: 0 100%; }
+.ridge5 { animation: ridgeDrift5 linear both; animation-timeline: scroll(root); animation-range: 0 100%; }
+
+/*
+  The mountain and the moon don't move themselves — they sit still in one
+  tall scene. What moves is the "camera": as you scroll, the view pans
+  upward through that scene, so the peak (anchored near the bottom of the
+  scene) sinks out of frame while the moon (anchored near the top) comes
+  into frame. Implemented as one translateY on the whole scene.
+*/
+@keyframes sceneRise {
+  from { transform: translateY(-55vh); }
+  to { transform: translateY(0); }
+}
+.scene { animation: sceneRise linear both; animation-timeline: scroll(root); animation-range: 0 100%; }
+
+/* Top progress bar: one segment per section, lit while that section is the one in view. */
+.pageRoot { timeline-scope: --sec-1, --sec-2, --sec-3, --sec-4; }
+.section1 { view-timeline-name: --sec-1; view-timeline-axis: block; }
+.section2 { view-timeline-name: --sec-2; view-timeline-axis: block; }
+.section3 { view-timeline-name: --sec-3; view-timeline-axis: block; }
+.section4 { view-timeline-name: --sec-4; view-timeline-axis: block; }
+
+@keyframes segLit {
+  0% { opacity: 0.25; }
+  30% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0.25; }
+}
+.seg1 { animation: segLit linear both; animation-timeline: --sec-1; animation-range: cover 0% cover 100%; }
+.seg2 { animation: segLit linear both; animation-timeline: --sec-2; animation-range: cover 0% cover 100%; }
+.seg3 { animation: segLit linear both; animation-timeline: --sec-3; animation-range: cover 0% cover 100%; }
+.seg4 { animation: segLit linear both; animation-timeline: --sec-4; animation-range: cover 0% cover 100%; }

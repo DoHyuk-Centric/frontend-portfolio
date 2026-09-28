@@ -91,4 +91,14 @@
   html {
     @apply font-sans;
   }
+
+  /*
+   * Home's section-snap scroll needs `scroll-snap-type` on the actual
+   * scrolling box, which is the document (<body>) itself — there's no
+   * nested overflow container to put it on. Scoped with :has() so it only
+   * applies while Home's #hero section is on the page, not site-wide.
+   */
+  body:has(#hero) {
+    scroll-snap-type: y mandatory;
+  }
 }
