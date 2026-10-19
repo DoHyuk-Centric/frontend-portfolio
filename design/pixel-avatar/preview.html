@@ -1,0 +1,1353 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>김도혁 도트 아바타</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
+<style>
+  /* Layout: a handheld screen that fades through the 8 life scenes, palette chips beside it, and every scene laid out as a contact sheet below. */
+  :root {
+    --bg: #eceaf3;
+    --panel: #f9f8fd;
+    --ink: #24203a;
+    --muted: #67627f;
+    --line: #d6d2e4;
+    --accent: #d9481f;
+    --chip: #e2deef;
+    --bezel: #b9b7c6;
+    --bezel-ink: #4b4760;
+    --font-pixel: "DotGothic16", "IBM Plex Sans KR", ui-monospace, monospace;
+    --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17151f; --panel: #211e2d; --ink: #ece9f7; --muted: #a49fbb;
+      --line: #36314a; --accent: #ff8a65; --chip: #2d2940;
+      --bezel: #3a3650; --bezel-ink: #c9c5dc; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17151f; --panel: #211e2d; --ink: #ece9f7; --muted: #a49fbb;
+    --line: #36314a; --accent: #ff8a65; --chip: #2d2940;
+    --bezel: #3a3650; --bezel-ink: #c9c5dc; color-scheme: dark;
+  }
+
+  body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.6; }
+  .page {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding-block: 40px 64px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  header { display: flex; flex-direction: column; gap: 8px; max-width: 66ch; }
+  .eyebrow { font-family: var(--font-pixel); font-size: 13px; letter-spacing: 0.12em; color: var(--accent); }
+  h1 { margin: 0; font-size: clamp(26px, 4vw, 34px); line-height: 1.25; text-wrap: balance; }
+  h2 { margin: 0; font-size: 19px; }
+  header p, .section-lead { margin: 0; color: var(--muted); }
+
+  button {
+    font: inherit; font-size: 14px;
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+    padding: 6px 14px; border-radius: 999px; cursor: pointer;
+  }
+  button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .settings { display: grid; grid-template-columns: minmax(0, auto) minmax(0, 1fr); gap: 16px 40px; }
+  .settings h3, .side h3 { margin: 0 0 8px; font-size: 13px; color: var(--muted); font-weight: 500; letter-spacing: 0.04em; }
+
+  .journey { position: relative; }
+  .sticky {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    height: 100svh;
+    display: flex;
+    align-items: center;
+  }
+  .player { display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: center; width: 100%; }
+  .console {
+    background: var(--bezel);
+    border-radius: 14px 14px 40px 14px;
+    padding: 18px 18px 14px;
+    display: flex; flex-direction: column; gap: 10px;
+    width: min(100%, 524px, calc((100svh - 230px) * 1.111 + 36px));
+    box-sizing: border-box;
+  }
+  .scene-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(0, 0, 0, 0.15); }
+  .scene-progress span { display: block; height: 100%; width: 0; background: var(--screen-0, #0b2613); }
+  .hint { margin: 0; color: var(--muted); font-size: 13px; max-width: 32ch; }
+  .screen { position: relative; width: 100%; aspect-ratio: 160 / 144; border-radius: 4px; overflow: hidden; }
+  .screen canvas {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    transition: opacity 0.7s ease;
+  }
+  .console .brand { font-family: var(--font-pixel); color: var(--bezel-ink); font-size: 13px; letter-spacing: 0.1em; }
+  .dialog {
+    border: 3px solid var(--screen-0, #0b2613);
+    background: var(--screen-3, #eaf7cc);
+    color: var(--screen-0, #0b2613);
+    border-radius: 4px;
+    padding: 10px 14px;
+    min-height: 92px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .dialog .meta { font-family: var(--font-pixel); font-size: 12px; letter-spacing: 0.08em; opacity: 0.8; }
+  .dialog .title { font-weight: 700; font-size: 16px; }
+  .dialog .desc { font-size: 13.5px; line-height: 1.5; }
+
+  .side { display: flex; flex-direction: column; gap: 12px; min-width: 0; flex: 1 1 200px; }
+  .step-count { font-family: var(--font-pixel); color: var(--accent); min-width: 56px; font-variant-numeric: tabular-nums; }
+  .dots { display: flex; flex-wrap: wrap; gap: 6px; }
+  .dots button { width: 16px; height: 16px; padding: 0; border-radius: 3px; }
+  .dots button[aria-current="step"] { background: var(--accent); border-color: var(--accent); }
+  .palettes { display: flex; flex-wrap: wrap; gap: 8px; }
+  .palettes button { display: flex; align-items: center; gap: 8px; border-radius: 10px; padding: 6px 10px; }
+  .palettes .chips { display: flex; }
+  .palettes .chips span { width: 14px; height: 14px; }
+  .notes ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+
+  .sheet-wrap { display: flex; flex-direction: column; gap: 16px; }
+  .sheet-head { display: flex; flex-direction: column; gap: 4px; }
+  .sheet { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 176px), 1fr)); gap: 18px 14px; }
+  .thumb { display: flex; flex-direction: column; gap: 6px; background: none; border: 0; padding: 0; border-radius: 6px; text-align: left; color: var(--ink); }
+  .thumb canvas { width: 100%; height: auto; border-radius: 4px; }
+  .thumb .num { font-family: var(--font-pixel); font-size: 12px; color: var(--accent); }
+  .thumb .label { font-size: 13.5px; line-height: 1.35; }
+  .thumb[aria-current="true"] canvas { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+  footer { color: var(--muted); font-size: 13px; max-width: 70ch; }
+
+  @media (max-width: 820px) {
+    .settings { grid-template-columns: minmax(0, 1fr); }
+    .side .hint { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .screen canvas { transition: none; } }
+</style>
+
+<main class="page">
+  <header>
+    <span class="eyebrow">PIXEL AVATAR LAB · GAME BOY</span>
+    <h1>김도혁 도트 아바타, 게임보이 장면 8컷</h1>
+    <p>스크롤을 내리는 만큼 장면 안의 애니메이션이 진행되고, 한 장면이 끝나면 다음 장면으로 페이드됩니다. 장면마다 중간에서 동작이 시작됩니다.</p>
+  </header>
+
+  <div class="settings">
+    <div>
+      <h3>팔레트</h3>
+      <div class="palettes" id="palettes"></div>
+    </div>
+    <div class="notes">
+      <h3>장면별 애니메이션</h3>
+      <ul>
+        <li>모든 장면은 다듬은 차림(v2)으로, 장면 중간을 지나면 동작이 자동으로 재생됩니다.</li>
+        <li><strong>고교</strong> 졸업장 만세 · <strong>대학 진학</strong> 연필로 필기 · <strong>대학 졸업</strong> 학사모 던지기 · <strong>입대</strong> 경례 · <strong>전역</strong> 경례를 내리기 · <strong>사업</strong> 우산 펼치기 · <strong>부트캠프</strong> 함께 코딩하다 번갈아 대화 · <strong>지금</strong> 코딩</li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="journey" id="journey" aria-label="스크롤 장면 미리보기">
+    <div class="sticky">
+      <div class="player">
+        <div class="console">
+          <div class="screen" id="screen">
+            <canvas id="canvas-a" width="160" height="144" role="img" aria-label=""></canvas>
+            <canvas id="canvas-b" width="160" height="144" aria-hidden="true" style="opacity:0"></canvas>
+            <div class="scene-progress" aria-hidden="true"><span id="scene-progress"></span></div>
+          </div>
+          <div class="dialog" id="dialog" aria-live="polite">
+            <span class="meta" id="dialog-meta"></span>
+            <span class="title" id="dialog-title"></span>
+            <span class="desc" id="dialog-desc"></span>
+          </div>
+          <span class="brand">DOHYUK · LIFE</span>
+        </div>
+
+        <div class="side">
+          <span class="step-count" id="step-count">01 / 08</span>
+          <div class="dots" id="dots"></div>
+          <p class="hint">스크롤을 내리면 장면이 진행됩니다. 칸을 누르면 그 장면의 시작으로 이동합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sheet-wrap" aria-labelledby="sheet-title">
+    <div class="sheet-head">
+      <h2 id="sheet-title">장면 8컷 한눈에 보기</h2>
+      <p class="section-lead">장면을 누르면 위에서 그 장면의 시작으로 스크롤합니다.</p>
+    </div>
+    <div class="sheet" id="sheet"></div>
+  </section>
+
+  <footer>
+    방향을 정하기 위한 초안입니다. 장면 구성과 팔레트를 정하면 캐릭터와 건물을 한 컷씩 다듬어 사이트의 스크롤 장면에 옮깁니다.
+  </footer>
+</main>
+
+<script>
+// ==================== 이야기: 8개 장면의 문구 ====================
+
+const SCENES = [
+  { key: "high", label: "고등학교 졸업", title: "고등학교를 졸업하다", desc: "졸업장을 손에 쥐고 다음 길을 고민했습니다." },
+  { key: "univ", label: "대학교 진학", period: "2017.03", title: "대학교에 진학하다", desc: "세명대학교 컴퓨터학부에서 개발을 처음 배우기 시작했습니다." },
+  { key: "grad", label: "대학교 졸업", period: "2022.02", title: "대학교를 졸업하다", desc: "학사모를 쓰고, ROTC 60기로 임관을 준비했습니다." },
+  { key: "army", label: "입대", period: "2022.03", title: "군대에 가다", desc: "ROTC 장교로 육군에서 복무했습니다." },
+  { key: "discharge", label: "전역", period: "2024.06", title: "중위로 전역하다", desc: "무사히 임무를 마치고 육군 중위로 전역했습니다." },
+  { key: "business", label: "사업 도전", title: "사업에 도전하다", desc: "처음으로 사업을 시작했고, 쉽지 않은 시간도 겪었습니다." },
+  { key: "bootcamp", label: "부트캠프", period: "2025.12", title: "부트캠프에서 다시 시작하다", desc: "프론트엔드 부트캠프에서 개발을 다시 시작했고, Kanto로 파이널 프로젝트 대상을 받았습니다." },
+  { key: "now", label: "지금의 나", period: "NOW", title: "개발하는 지금의 나", desc: "오늘도 어제의 나를 리팩토링하며 성장하고 있습니다." },
+];
+
+// ==================== 팔레트: 4단계 명암 ====================
+
+const PALETTES = [
+  { key: "vivid", name: "선명한 그린", colors: ["#0b2613", "#2f6a3b", "#8dc455", "#eaf7cc"] },
+  { key: "classic", name: "클래식 그린", colors: ["#0f380f", "#306230", "#8bac0f", "#9bbc0f"] },
+  { key: "pocket", name: "포켓 그레이", colors: ["#1a1a1c", "#56565c", "#a9a9b0", "#eeeef0"] },
+  { key: "sepia", name: "세피아", colors: ["#2a1a10", "#76492a", "#d59d63", "#f8ebd2"] },
+];
+
+// 0 = 가장 어두움, 3 = 가장 밝음. 모든 그림은 이 네 단계 번호로만 그립니다.
+const DARK = 0, MID = 1, LIGHT = 2, PAPER = 3;
+const W = 160, H = 144, GROUND = 118;
+
+// ==================== 도트 캔버스: 번호로 픽셀 찍기 ====================
+
+function makeGrid(w, h, fill = null) { return { w, h, px: new Array(w * h).fill(fill) }; }
+function put(g, x, y, v) {
+  x = Math.round(x); y = Math.round(y);
+  if (x >= 0 && y >= 0 && x < g.w && y < g.h) g.px[y * g.w + x] = v;
+}
+function get(g, x, y) { return x < 0 || y < 0 || x >= g.w || y >= g.h ? null : g.px[y * g.w + x]; }
+function rect(g, x, y, w, h, v) { for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) put(g, x + i, y + j, v); }
+function box(g, x, y, w, h, fillV, lineV = DARK) { rect(g, x, y, w, h, lineV); rect(g, x + 1, y + 1, w - 2, h - 2, fillV); }
+function disc(g, cx, cy, r, v) { for (let y = -r; y <= r; y++) for (let x = -r; x <= r; x++) if (x * x + y * y <= r * r + r * 0.6) put(g, cx + x, cy + y, v); }
+function outline(g, v = DARK) {
+  const out = makeGrid(g.w, g.h); out.px = g.px.slice();
+  for (let y = 0; y < g.h; y++) for (let x = 0; x < g.w; x++) {
+    if (get(g, x, y) !== null) continue;
+    if ([[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => get(g, x + dx, y + dy) !== null)) put(out, x, y, v);
+  }
+  return out;
+}
+function stamp(target, src, ox, oy) {
+  for (let y = 0; y < src.h; y++) for (let x = 0; x < src.w; x++) {
+    const v = get(src, x, y);
+    if (v !== null) put(target, ox + x, oy + y, v);
+  }
+}
+/** Places a sprite so its bottom row stands on the ground line. */
+function standOnGround(target, src, centerX) { stamp(target, src, centerX - Math.floor(src.w / 2), GROUND - src.h); }
+
+const GLYPHS = {
+  O: ["111", "101", "101", "101", "111"], P: ["111", "101", "111", "100", "100"],
+  E: ["111", "100", "110", "100", "111"], N: ["101", "111", "111", "111", "101"],
+  "<": ["001", "010", "100", "010", "001"], "/": ["001", "001", "010", "100", "100"],
+  ">": ["100", "010", "001", "010", "100"],
+  B: ["110", "101", "110", "101", "110"], T: ["111", "010", "010", "010", "010"],
+  C: ["111", "100", "100", "100", "111"], A: ["010", "101", "111", "101", "101"],
+  M: ["101", "111", "111", "101", "101"],
+  // Lowercase sits on rows 2-4; p hangs one row below the baseline.
+  o: ["000", "000", "111", "101", "111"], t: ["000", "010", "111", "010", "011"],
+  a: ["000", "000", "011", "101", "011"], m: ["00000", "00000", "11110", "10101", "10101"],
+  p: ["000", "000", "111", "101", "111", "100"],
+};
+function text(g, x, y, str, v, scale = 1) {
+  let left = 0;
+  [...str].forEach((ch) => {
+    const glyph = GLYPHS[ch];
+    glyph.forEach((row, j) => [...row].forEach((bit, k) =>
+      bit === "1" && rect(g, x + (left + k) * scale, y + j * scale, scale, scale, v)));
+    left += glyph[0].length + 1;
+  });
+}
+
+// ==================== 캐릭터: 첫 시안의 A 캐릭터를 그대로 사용 ====================
+
+const STAGE_LOOKS = [
+  { age: "teen", outfit: "#334155", collar: true, prop: "diploma" },
+  { age: "adult", outfit: "#60a5fa", prop: "backpack" },
+  { age: "adult", outfit: "#1f2937", hat: "grad", prop: "diploma" },
+  { age: "adult", outfit: "#55663a", hat: "helmet2", camo2: true, uniform: true, belt: true },
+  { age: "adult", outfit: "#55663a", camo2: true, uniform: true, belt: true, prop: "confetti" },
+  { age: "adult", outfit: "#6b7280", tie: true, prop: "rain", mood: "tired" },
+  { age: "adult", outfit: "#f97316", prop: "book" },
+  { age: "adult", outfit: "#14b8a6", hood: true, prop: "laptop" },
+];
+
+const SPRITE = { W: 22, H: 26, legW: 2, armW: 1, hairRows: 2 };
+const SPRITE_BODY = {
+  baby: { hw: 7, hh: 6 },
+  child: { hw: 8, hh: 7, bw: 6, bh: 3, lh: 2 },
+  teen: { hw: 8, hh: 7, bw: 6, bh: 4, lh: 3 },
+  adult: { hw: 8, hh: 7, bw: 6, bh: 5, lh: 3 },
+};
+/** Each sprite pixel is drawn as a 2×2 block inside the 160×144 scene. */
+const SPRITE_SCALE = 2;
+const SKIN = "#f6cfa8";
+const HAIR = "#2a2230";
+const OUTLINE_COLOR = "#2b2235";
+const PANTS = "#3b3f58";
+const SHOE = "#1f1b2b";
+
+function shade(hex, amount) {
+  const n = parseInt(hex.slice(1), 16);
+  const ch = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) =>
+    Math.max(0, Math.min(255, Math.round(amount < 0 ? v * (1 + amount) : v + (255 - v) * amount)))
+  );
+  return "#" + ch.map((v) => v.toString(16).padStart(2, "0")).join("");
+}
+
+/** Same luminance cut-offs as the first draft, so the character keeps its look. */
+function toShade(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  const lum = (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255;
+  if (lum < 0.28) return DARK;
+  if (lum < 0.55) return MID;
+  return LIGHT;
+}
+
+/**
+ * `frame` drives small idle loops (props, blinking); `step` is the walk-cycle
+ * frame from the first draft (0 = standing, 1 and 3 = a leg lifted).
+ */
+function buildCharacter(look, frame, step = 0, pose = null) {
+  const g = makeGrid(SPRITE.W, SPRITE.H);
+  const ground = SPRITE.H - 1;
+  const cx = Math.floor(SPRITE.W / 2);
+
+  const headBox = look.age === "baby"
+    ? drawBaby(g, look, cx, ground, frame)
+    : drawWalker(g, look, cx, ground, step, pose, frame);
+
+  const hidesHat = pose === "capHold" || pose === "capToss";
+  if (look.hat && !hidesHat) drawHat(g, look.hat, headBox);
+  const handBusy = pose && (look.prop === "diploma" || look.prop === "book");
+  if (!handBusy && !isBothArmPose(pose)) drawProp(g, look, headBox, frame);
+
+  const colored = outline(g, OUTLINE_COLOR);
+  const shaded = makeGrid(colored.w, colored.h);
+  shaded.px = colored.px.map((c) => (c === null ? null : toShade(c)));
+  return shaded;
+}
+
+function drawBaby(g, look, cx, ground, frame) {
+  const p = SPRITE_BODY.baby;
+  const bob = frame % 2;
+  const bundleW = p.hw + 2;
+  const bundleH = Math.round(p.hh * 0.9);
+  const bx = cx - Math.floor(bundleW / 2);
+  const by = ground - bundleH + 1;
+  rect(g, bx + 1, by, bundleW - 2, bundleH, look.outfit);
+  rect(g, bx, by + 1, bundleW, bundleH - 2, look.outfit);
+  rect(g, bx + 1, by + Math.floor(bundleH / 2), bundleW - 2, 1, shade(look.outfit, -0.18));
+  return drawHead(g, look, cx, by - bob, p);
+}
+
+/** The first draft's walk cycle, unchanged; step 0 is the plain standing pose. */
+function drawWalker(g, look, cx, ground, step, pose = null, frame = 0) {
+  const p = SPRITE_BODY[look.age];
+  const stepping = step === 1 || step === 3;
+  const bob = stepping ? 1 : 0;
+  const legTop = ground - p.lh + 1 - bob;
+  const pants = look.uniform || look.dress ? shade(look.outfit, -0.12) : PANTS;
+  const bootRows = look.uniform ? 2 : 1;
+
+  [[cx - SPRITE.legW, step === 1], [cx, step === 3]].forEach(([x, lifted]) => {
+    const bottom = lifted ? ground - 1 : ground;
+    rect(g, x, legTop, SPRITE.legW, bottom - legTop + 1, pants);
+    rect(g, x, bottom - bootRows + 1, SPRITE.legW, bootRows, SHOE);
+  });
+  if (look.uniform) put(g, cx - SPRITE.legW, legTop, CAMO_DARK);
+
+  const bodyX = cx - Math.floor(p.bw / 2);
+  const bodyTop = legTop - p.bh;
+  rect(g, bodyX, bodyTop, p.bw, p.bh, look.outfit);
+  rect(g, bodyX + p.bw - 1, bodyTop + 1, 1, p.bh - 1, shade(look.outfit, -0.22));
+  drawOutfitDetails(g, look, bodyX, bodyTop, p);
+
+  const armLength = Math.max(2, p.bh - 1);
+  const swing = step === 1 ? 1 : step === 3 ? -1 : 0;
+  const bothArms = isBothArmPose(pose);
+  if (!bothArms) {
+    rect(g, bodyX - SPRITE.armW, bodyTop + 1 + swing, SPRITE.armW, armLength, shade(look.outfit, -0.1));
+    put(g, bodyX - SPRITE.armW, bodyTop + armLength + swing, SKIN);
+  }
+  const head = drawHead(g, look, cx, bodyTop, p);
+  if (bothArms) drawBothArmPose(g, look, bodyX, bodyTop, p, head, pose, frame);
+  else if (pose && !ARMS_DOWN_POSES.includes(pose)) drawRightArmPose(g, look, bodyX + p.bw, bodyTop, head, pose, frame);
+  else {
+    rect(g, bodyX + p.bw, bodyTop + 1 - swing, SPRITE.armW, armLength, shade(look.outfit, -0.1));
+    put(g, bodyX + p.bw + SPRITE.armW - 1, bodyTop + armLength - swing, SKIN);
+  }
+  head.handRight = { x: bodyX + p.bw + SPRITE.armW, y: bodyTop + armLength - swing };
+  head.body = { x: bodyX, y: bodyTop, w: p.bw, h: p.bh };
+  return head;
+}
+
+const CAMO_DARK = "#3a4626";
+const BERET = "#5b5b66";
+const CAMO_LIGHT = "#a3b46e";
+
+// ---- 동작: 오른팔 하나로 하는 동작과 두 팔로 하는 동작 ----
+
+const DIPLOMA = "#fef3c7";
+const RIBBON = "#dc2626";
+const GOLD = "#facc15";
+const UMBRELLA = "#dc2626";
+const BULB = "#fde68a";
+
+/** Poses that move both arms: lift / cheer (diploma) and trophyUp / trophy. */
+/** Action steps that keep both arms at the sides (the scene, not the arm, shows the action). */
+const ARMS_DOWN_POSES = ["lowered", "listen", "talk"];
+
+function isBothArmPose(pose) {
+  return pose === "lift" || pose === "cheer" || pose === "trophyUp" || pose === "trophy"
+    || pose === "typeReady" || pose === "typing" || pose === "discuss";
+}
+
+/** Poses that move only the right arm; each also draws what the hand holds. */
+function drawRightArmPose(g, look, shoulderX, bodyTop, head, pose, frame = 0) {
+  const sleeve = shade(look.outfit, -0.1);
+  const R = shoulderX;
+  const bt = bodyTop;
+  const hy = head.y;
+  const column = (from, to) => { for (let y = from; y <= to; y++) put(g, R + 1, y, sleeve); };
+  put(g, R, bt + 1, sleeve);
+  switch (pose) {
+    case "raise":
+      put(g, R + 1, bt, sleeve);
+      put(g, R + 1, bt - 1, sleeve);
+      put(g, R + 1, bt - 2, SKIN);
+      break;
+    case "salute":
+      column(hy + 3, bt);
+      put(g, R, hy + 2, SKIN);
+      put(g, R + 1, hy + 2, SKIN);
+      break;
+    case "pencilRest":
+    case "writing": {
+      // Hand on the notebook; while writing it slides left and right as the lines fill.
+      const dx = pose === "writing" ? frame % 2 : 0;
+      put(g, R, bt + 2, sleeve);
+      put(g, R - 1 - dx, bt + 3, SKIN);
+      drawPencil(g, R - dx, bt);
+      break;
+    }
+    case "fistReady":
+      put(g, R + 1, bt, sleeve);
+      put(g, R + 1, bt - 1, sleeve);
+      rect(g, R + 1, bt - 3, 2, 2, SKIN);
+      break;
+    case "fistPump":
+      column(hy, bt);
+      rect(g, R + 1, hy - 2, 2, 2, SKIN);
+      break;
+    case "capHold":
+      column(hy - 1, bt);
+      put(g, R + 1, hy - 2, SKIN);
+      drawHeldCap(g, R, hy - 4);
+      break;
+    case "capToss":
+      column(hy - 1, bt);
+      put(g, R + 1, hy - 2, SKIN);
+      put(g, R + 2, hy - 3, SKIN);
+      drawHeldCap(g, R + 1, hy - 10);
+      break;
+    case "waveUp":
+    case "wave": {
+      put(g, R + 1, bt, sleeve);
+      put(g, R + 2, bt - 1, sleeve);
+      put(g, R + 2, bt - 2, sleeve);
+      const handX = pose === "wave" ? R + 3 : R + 2;
+      put(g, handX, bt - 3, SKIN);
+      put(g, handX, bt - 4, SKIN);
+      break;
+    }
+    case "umbrellaUp":
+      column(bt - 4, bt);
+      put(g, R + 1, bt - 5, SKIN);
+      rect(g, R + 1, bt - 13, 2, 8, UMBRELLA);
+      put(g, R + 1, bt - 14, SHOE);
+      break;
+    case "umbrellaOpen":
+      put(g, R + 1, bt, sleeve);
+      put(g, R + 1, bt - 1, SKIN);
+      for (let y = hy - 4; y <= bt - 2; y++) put(g, R + 1, y, SHOE);
+      drawCanopy(g, R, hy - 8);
+      break;
+    case "ideaUp":
+    case "idea":
+      put(g, R + 1, bt, sleeve);
+      put(g, R + 1, bt - 1, sleeve);
+      put(g, R + 1, bt - 2, sleeve);
+      put(g, R + 1, bt - 3, SKIN);
+      put(g, R + 1, bt - 4, SKIN);
+      if (pose === "idea") drawBulb(g, R - 3, hy - 9);
+      break;
+  }
+}
+
+/** A short yellow pencil standing up from (x, y + 2), with a dark tip at the bottom. */
+function drawPencil(g, x, y) {
+  put(g, x, y, "#f9a8d4");
+  put(g, x, y + 1, "#facc15");
+  put(g, x, y + 2, "#facc15");
+}
+
+/** The laptop held in front of the body; while typing, code fills the screen line by line. */
+function drawLaptop(g, b, frame, typing) {
+  rect(g, b.x - 1, b.y + 1, b.w + 2, Math.max(3, b.h - 2), "#334155");
+  rect(g, b.x, b.y + 2, b.w, Math.max(1, b.h - 4), "#0f172a");
+  if (typing) {
+    for (let i = 0; i <= frame % 4 + 1; i++) put(g, b.x + i, b.y + 2, "#5eead4");
+    return;
+  }
+  put(g, b.x + 1, b.y + 2, "#5eead4");
+  put(g, b.x + 3, b.y + 2 + (frame % 2), "#5eead4");
+}
+
+function drawHeldCap(g, x, y) {
+  rect(g, x - 2, y, 7, 1, "#1f2937");
+  rect(g, x, y + 1, 3, 1, "#111827");
+  put(g, x + 4, y + 1, GOLD);
+  put(g, x + 4, y + 2, GOLD);
+}
+
+function drawCanopy(g, cx, y) {
+  rect(g, cx - 3, y, 7, 1, UMBRELLA);
+  rect(g, cx - 5, y + 1, 11, 1, UMBRELLA);
+  rect(g, cx - 6, y + 2, 13, 1, UMBRELLA);
+  for (let x = cx - 6; x <= cx + 6; x += 2) put(g, x, y + 3, UMBRELLA);
+  put(g, cx - 2, y + 1, "#fca5a5");
+  put(g, cx - 1, y + 1, "#fca5a5");
+}
+
+/** A round bulb with a grey screw base and three short rays. */
+function drawBulb(g, cx, y) {
+  rect(g, cx - 1, y, 3, 1, BULB);
+  rect(g, cx - 2, y + 1, 5, 2, BULB);
+  rect(g, cx - 1, y + 3, 3, 1, BULB);
+  rect(g, cx - 1, y + 4, 3, 1, "#6b7280");
+  put(g, cx - 4, y + 1, BULB);
+  put(g, cx + 4, y + 1, BULB);
+  put(g, cx, y - 2, BULB);
+}
+
+/** A 6 × 4 trophy for the hand held at the side, where the full one does not fit. */
+function drawSmallTrophy(g, x, y) {
+  rect(g, x, y, 4, 2, GOLD);
+  put(g, x - 1, y, GOLD);
+  put(g, x + 4, y, GOLD);
+  rect(g, x + 1, y + 2, 2, 1, GOLD);
+  rect(g, x, y + 3, 4, 1, "#78350f");
+}
+
+/** A cup with two handles, a stem and a dark base; 8 × 5 pixels from (x - 1, y). */
+function drawTrophy(g, x, y) {
+  rect(g, x, y, 6, 2, GOLD);
+  rect(g, x - 1, y, 1, 2, GOLD);
+  rect(g, x + 6, y, 1, 2, GOLD);
+  rect(g, x + 1, y + 2, 4, 1, GOLD);
+  rect(g, x + 2, y + 3, 2, 1, GOLD);
+  rect(g, x + 1, y + 4, 4, 1, "#78350f");
+}
+
+/**
+ * "lift" / "trophyUp": both arms out to the sides, the item in the right hand.
+ * "cheer" / "trophy": arms up in a V, the item held high in the right hand.
+ */
+function drawBothArmPose(g, look, bodyX, bodyTop, p, head, pose, frame = 0) {
+  const sleeve = shade(look.outfit, -0.1);
+  const left = bodyX - 1;
+  const right = bodyX + p.bw;
+  if (pose === "discuss") {
+    drawLaptop(g, { x: bodyX, y: bodyTop, w: p.bw, h: p.bh }, frame, false);
+    put(g, left, bodyTop + 1, sleeve);
+    put(g, left, bodyTop + 2, sleeve);
+    put(g, left + 1, bodyTop + 3, SKIN);
+    put(g, right, bodyTop + 1, sleeve);
+    put(g, right + 1, bodyTop, sleeve);
+    put(g, right + 1, bodyTop - 1, sleeve);
+    // An open palm raised while explaining.
+    rect(g, right + 1, bodyTop - 3, 2, 2, SKIN);
+    return;
+  }
+  if (pose === "typeReady" || pose === "typing") {
+    const typing = pose === "typing";
+    drawLaptop(g, { x: bodyX, y: bodyTop, w: p.bw, h: p.bh }, frame, typing);
+    [left, right].forEach((x) => {
+      put(g, x, bodyTop + 1, sleeve);
+      put(g, x, bodyTop + 2, sleeve);
+    });
+    // While typing, the hands take turns lifting off the keys.
+    const leftUp = typing && frame % 2 === 1 ? 1 : 0;
+    const rightUp = typing && frame % 2 === 0 ? 1 : 0;
+    put(g, left + 1, bodyTop + 3 - leftUp, SKIN);
+    put(g, right - 1, bodyTop + 3 - rightUp, SKIN);
+    return;
+  }
+  if (pose === "trophyUp") {
+    [[left, -1], [right, 1]].forEach(([x, side]) => {
+      put(g, x, bodyTop + 1, sleeve);
+      put(g, x + side, bodyTop + 1, sleeve);
+      put(g, x + side * 2, bodyTop + 1, SKIN);
+    });
+    drawSmallTrophy(g, right + 2, bodyTop - 3);
+    return;
+  }
+  if (pose === "trophy") {
+    put(g, left, bodyTop + 1, sleeve);
+    put(g, left - 1, bodyTop, sleeve);
+    put(g, left - 2, bodyTop - 1, sleeve);
+    put(g, left - 2, bodyTop - 2, sleeve);
+    put(g, left - 3, bodyTop - 3, SKIN);
+    put(g, right, bodyTop + 1, sleeve);
+    for (let y = head.y - 1; y <= bodyTop; y++) put(g, right + 1, y, sleeve);
+    put(g, right + 1, head.y - 2, SKIN);
+    drawTrophy(g, right - 2, head.y - 7);
+    return;
+  }
+  if (pose === "lift") {
+    [[left, -1], [right, 1]].forEach(([x, side]) => {
+      put(g, x, bodyTop + 1, sleeve);
+      put(g, x + side, bodyTop + 1, sleeve);
+      put(g, x + side * 2, bodyTop + 1, SKIN);
+    });
+    rect(g, right + 2, bodyTop - 1, 3, 2, DIPLOMA);
+    put(g, right + 3, bodyTop - 1, RIBBON);
+    return;
+  }
+  [[left, -1], [right, 1]].forEach(([x, side]) => {
+    put(g, x, bodyTop + 1, sleeve);
+    put(g, x + side, bodyTop, sleeve);
+    put(g, x + side * 2, bodyTop - 1, sleeve);
+    put(g, x + side * 2, bodyTop - 2, sleeve);
+    put(g, x + side * 3, bodyTop - 3, SKIN);
+  });
+  rect(g, right + 3, bodyTop - 9, 2, 6, DIPLOMA);
+  rect(g, right + 3, bodyTop - 7, 2, 1, RIBBON);
+}
+
+function drawOutfitDetails(g, look, x, y, p) {
+  const mid = x + Math.floor(p.bw / 2);
+  if (look.blazer) {
+    put(g, mid - 1, y, "#f8fafc");
+    put(g, mid, y, "#f8fafc");
+    put(g, mid - 2, y, shade(look.outfit, -0.3));
+    put(g, mid + 1, y, shade(look.outfit, -0.3));
+    rect(g, mid - 1, y + 1, 1, p.bh - 2, "#7f1d1d");
+    put(g, mid + 1, y + 2, "#cbd5e1");
+  }
+  if (look.camo2) {
+    [[1, 1], [2, 1], [4, 3], [0, 3]].forEach(([dx, dy]) => put(g, x + dx, y + dy, CAMO_DARK));
+    [[3, 0], [4, 1], [1, 2]].forEach(([dx, dy]) => put(g, x + dx, y + dy, CAMO_LIGHT));
+  }
+  if (look.belt) {
+    rect(g, x, y + p.bh - 2, p.bw, 1, "#22241a");
+    put(g, mid - 1, y + p.bh - 2, "#d9c27a");
+  }
+  if (look.collar) { put(g, mid - 1, y, "#f8fafc"); put(g, mid, y, "#f8fafc"); }
+  if (look.tie) {
+    put(g, mid - 1, y, "#f8fafc");
+    put(g, mid, y, "#f8fafc");
+    rect(g, mid - 1, y + 1, 1, Math.max(2, p.bh - 2), "#b91c1c");
+  }
+  if (look.camo) {
+    for (let j = 0; j < p.bh; j += 2) put(g, x + ((j * 3) % p.bw), y + j, "#3a4626");
+    put(g, x + p.bw - 3, y + 1, "#7a8a52");
+  }
+  if (look.hood) {
+    rect(g, x, y, p.bw, 1, shade(look.outfit, -0.25));
+    put(g, mid - 1, y + 1, "#f8fafc");
+    put(g, mid, y + 2, "#f8fafc");
+  }
+  if (look.tee) rect(g, mid - 1, y, 2, 2, "#f8fafc");
+  if (look.dress) {
+    put(g, mid - 1, y, "#f8fafc");
+    put(g, mid, y, "#f8fafc");
+    rect(g, mid - 1, y + 1, 1, 2, "#1f1b2b");
+    put(g, mid, y + 2, GOLD);
+    put(g, mid, y + 4, GOLD);
+    put(g, x, y, GOLD);
+    put(g, x + p.bw - 1, y, GOLD);
+  }
+  if (look.stole) {
+    rect(g, x + 1, y, 1, p.bh, GOLD);
+    rect(g, x + p.bw - 2, y, 1, p.bh, GOLD);
+  }
+  if (look.lanyard) {
+    rect(g, mid - 2, y, 1, 2, "#1f2937");
+    rect(g, mid + 1, y, 1, 2, "#1f2937");
+    rect(g, mid - 1, y + 2, 2, 2, "#f8fafc");
+  }
+}
+
+function drawHead(g, look, cx, bodyTop, p) {
+  const hx = cx - Math.floor(p.hw / 2);
+  const hy = bodyTop - p.hh;
+  rect(g, hx, hy, p.hw, p.hh, SKIN);
+  [[hx, hy], [hx + p.hw - 1, hy], [hx, hy + p.hh - 1], [hx + p.hw - 1, hy + p.hh - 1]].forEach(([x, y]) => put(g, x, y, null));
+
+  const hair = look.hairColor ?? HAIR;
+  const hairRows = look.age === "baby" ? 1 : SPRITE.hairRows;
+  rect(g, hx + 1, hy, p.hw - 2, hairRows, hair);
+  if (look.age !== "baby") {
+    rect(g, hx, hy + 1, 1, hairRows + 1, hair);
+    rect(g, hx + p.hw - 1, hy + 1, 1, hairRows + 1, hair);
+    for (let i = 2; i < p.hw - 2; i += 3) put(g, hx + i, hy + hairRows, hair);
+  }
+  if (look.hairStyle === "ponytail") {
+    // A tied tail sticking out behind the right ear.
+    rect(g, hx + p.hw, hy + 1, 2, 2, hair);
+    rect(g, hx + p.hw + 1, hy + 3, 1, 2, hair);
+  } else if (look.hairStyle === "spiky") {
+    // Short hair standing up in spikes.
+    for (let i = 1; i < p.hw - 1; i += 2) put(g, hx + i, hy - 1, hair);
+  }
+
+  const eyeY = hy + Math.round(p.hh * 0.58);
+  const offset = Math.max(2, Math.floor(p.hw / 4));
+  const tired = look.mood === "tired";
+  [cx - offset, cx + offset - 1].forEach((ex) => {
+    put(g, ex, eyeY, HAIR);
+    if (tired) put(g, ex + (ex < cx ? -1 : 1), eyeY, HAIR);
+  });
+  if (tired) {
+    put(g, hx + p.hw, hy + 2, "#60a5fa");
+    put(g, hx + p.hw, hy + 3, "#60a5fa");
+  }
+  return { x: hx, y: hy, w: p.hw, h: p.hh, cx };
+}
+
+function drawHat(g, kind, head) {
+  const { x, y, w } = head;
+  if (kind === "kinder") {
+    rect(g, x + 1, y - 2, w - 2, 2, "#facc15");
+    rect(g, x + 2, y - 3, w - 4, 1, "#facc15");
+    rect(g, x - 1, y, w + 2, 1, "#ca8a04");
+  } else if (kind === "grad") {
+    rect(g, x + 1, y - 1, w - 2, 2, "#111827");
+    rect(g, x - 2, y - 2, w + 4, 1, "#1f2937");
+    rect(g, x + w + 1, y - 1, 1, 3, "#facc15");
+  } else if (kind === "helmet2") {
+    rect(g, x, y - 2, w, 3, "#55663a");
+    rect(g, x + 1, y - 3, w - 2, 1, "#55663a");
+    rect(g, x - 1, y + 1, w + 2, 1, CAMO_DARK);
+    put(g, x + 2, y - 2, CAMO_LIGHT);
+    put(g, x + 3, y - 2, CAMO_LIGHT);
+    put(g, x + 5, y - 1, CAMO_DARK);
+    put(g, x + 1, y, CAMO_DARK);
+    put(g, x - 1, y + 2, CAMO_DARK);
+    put(g, x + w, y + 2, CAMO_DARK);
+  } else if (kind === "patrol") {
+    rect(g, x, y - 2, w, 3, "#55663a");
+    rect(g, x - 1, y + 1, w + 2, 1, CAMO_DARK);
+    put(g, x + 2, y - 2, CAMO_LIGHT);
+    put(g, x + 5, y - 1, CAMO_DARK);
+  } else if (kind === "beret") {
+    rect(g, x + 1, y - 3, w - 1, 1, BERET);
+    rect(g, x, y - 2, w + 2, 2, BERET);
+    rect(g, x + w, y, 2, 1, BERET);
+    rect(g, x, y, w, 1, "#1f1b2b");
+    put(g, x + 2, y - 1, GOLD);
+  } else if (kind === "headphones") {
+    rect(g, x + 1, y - 1, w - 2, 1, "#1f2937");
+    rect(g, x - 1, y + 2, 2, 3, "#475569");
+    rect(g, x + w - 1, y + 2, 2, 3, "#475569");
+  } else if (kind === "helmet") {
+    rect(g, x, y - 1, w, 3, "#55663a");
+    rect(g, x + 1, y - 2, w - 2, 1, "#55663a");
+    rect(g, x - 1, y + 2, w + 2, 1, "#3a4626");
+    put(g, x + 2, y - 1, "#7a8a52");
+    put(g, x + w - 3, y, "#3a4626");
+  }
+}
+
+function drawProp(g, look, head, frame) {
+  const hand = head.handRight;
+  switch (look.prop) {
+    case "balloon": {
+      const bx = Math.min(SPRITE.W - 4, hand.x + 2);
+      for (let yy = hand.y - 1; yy > head.y - 2; yy--) put(g, hand.x, yy, "#9ca3af");
+      rect(g, bx - 1, head.y - 6, 3, 4, "#ef4444");
+      put(g, bx - 1, head.y - 6, "#fca5a5");
+      put(g, hand.x, head.y - 2, "#9ca3af");
+      break;
+    }
+    case "backpack": {
+      const b = head.body;
+      rect(g, b.x - SPRITE.armW - 2, b.y + 1, 2, b.h - 1, "#dc2626");
+      put(g, b.x + 1, b.y, "#991b1b");
+      put(g, b.x + b.w - 2, b.y, "#991b1b");
+      break;
+    }
+    case "duffel": {
+      const b = head.body;
+      rect(g, b.x - 5, b.y + 1, 4, 4, CAMO_LIGHT);
+      rect(g, b.x - 5, b.y + 1, 1, 4, CAMO_DARK);
+      put(g, b.x + 1, b.y, SHOE);
+      put(g, b.x + 2, b.y + 1, SHOE);
+      put(g, b.x + 3, b.y + 2, SHOE);
+      break;
+    }
+    case "diploma":
+      rect(g, hand.x, hand.y - 1, 3, 2, "#fef3c7");
+      put(g, hand.x + 1, hand.y - 1, "#dc2626");
+      break;
+    case "book":
+      rect(g, hand.x, hand.y - 2, 2, 3, "#2563eb");
+      put(g, hand.x, hand.y - 2, "#bfdbfe");
+      break;
+    case "laptop":
+      drawLaptop(g, head.body, frame, false);
+      break;
+    case "rain": {
+      const top = head.y - 6;
+      rect(g, head.x + 1, top, head.w - 2, 2, "#64748b");
+      rect(g, head.x + 2, top - 1, head.w - 4, 1, "#64748b");
+      for (let i = 0; i < head.w - 2; i += 3) put(g, head.x + 1 + i, top + 3 + ((frame + i) % 2), "#60a5fa");
+      break;
+    }
+    case "confetti": {
+      const colors = ["#f472b6", "#facc15", "#60a5fa", "#34d399"];
+      for (let i = 0; i < 6; i++) {
+        const x = (head.x - 3 + i * Math.ceil((head.w + 6) / 6)) % SPRITE.W;
+        put(g, x, head.y - 4 + ((frame + i * 2) % 4), colors[i % colors.length]);
+      }
+      break;
+    }
+  }
+}
+
+/** Stamps a sprite at SPRITE_SCALE so its feet rest on the ground line, or `hop` pixels above it. */
+function placeCharacter(target, sprite, centerX, hop = 0) {
+  const s = SPRITE_SCALE;
+  const ox = centerX - Math.floor((sprite.w * s) / 2);
+  const oy = GROUND - sprite.h * s - hop;
+  for (let y = 0; y < sprite.h; y++) for (let x = 0; x < sprite.w; x++) {
+    const v = get(sprite, x, y);
+    if (v !== null) rect(target, ox + x * s, oy + y * s, s, s, v);
+  }
+}
+
+// ==================== 풍경 조각: 땅·구름·나무·꽃·해 ====================
+
+function ground(g, night = false) {
+  rect(g, 0, GROUND, W, 1, DARK);
+  rect(g, 0, GROUND + 1, W, H - GROUND - 1, night ? MID : LIGHT);
+  for (let x = 2; x < W; x += 7) { put(g, x, GROUND + 4 + (x % 3), MID); put(g, x + 3, GROUND + 12 + (x % 4), MID); }
+  if (night) for (let x = 4; x < W; x += 9) put(g, x, GROUND + 6, DARK);
+}
+function cloud(g, x, y) {
+  const c = makeGrid(26, 10);
+  rect(c, 3, 4, 20, 5, PAPER); rect(c, 7, 1, 8, 4, PAPER); rect(c, 13, 2, 8, 3, PAPER);
+  stamp(g, outline(c, MID), x, y);
+}
+function tree(g, x, blossom = false, f = 0) {
+  const t = makeGrid(24, 34);
+  rect(t, 10, 18, 4, 16, DARK);
+  disc(t, 12, 10, 9, blossom ? LIGHT : MID);
+  [[8, 6], [15, 9], [10, 13], [16, 4]].forEach(([dx, dy]) => put(t, dx, dy, blossom ? PAPER : LIGHT));
+  standOnGround(g, outline(t, DARK), x);
+  if (blossom) [[x - 10, 60], [x + 16, 72], [x + 2, 88], [x + 26, 54]].forEach(([px, py], i) => put(g, px + ((f + i) % 2), py + ((f * 3 + i * 5) % 14), LIGHT));
+}
+function flowers(g, xs) { xs.forEach((x) => { put(g, x, GROUND - 3, LIGHT); put(g, x - 1, GROUND - 2, LIGHT); put(g, x + 1, GROUND - 2, LIGHT); put(g, x, GROUND - 2, DARK); put(g, x, GROUND - 1, MID); }); }
+
+// ==================== 건물: 장면마다 하나씩 ====================
+
+function building(drawFn, w, h) { const b = makeGrid(w, h); drawFn(b); return outline(b, DARK); }
+
+const school = (banner) => building((b) => {
+  rect(b, 0, 18, 70, 42, LIGHT); rect(b, 0, 16, 70, 3, DARK);
+  rect(b, 27, 0, 16, 18, LIGHT);
+  disc(b, 35, 8, 5, PAPER); put(b, 35, 6, DARK); put(b, 35, 7, DARK); put(b, 36, 8, DARK); put(b, 37, 8, DARK);
+  [5, 18, 44, 57].forEach((x) => { box(b, x, 24, 9, 8, PAPER); box(b, x, 38, 9, 8, PAPER); });
+  box(b, 28, 40, 14, 20, MID);
+  if (banner) { rect(b, 4, 49, 20, 8, DARK); rect(b, 6, 51, 16, 4, PAPER); rect(b, 8, 52, 12, 2, MID); }
+}, 70, 60);
+
+const university = (flagF) => building((b) => {
+  for (let y = 0; y < 14; y++) rect(b, 36 - y * 2.5, y + 6, y * 5, 1, MID);
+  rect(b, 2, 20, 68, 4, LIGHT);
+  [6, 18, 30, 42, 54].forEach((x) => rect(b, x + 3, 24, 6, 30, PAPER));
+  rect(b, 0, 54, 72, 3, LIGHT); rect(b, 0, 57, 72, 3, MID);
+  rect(b, 36, 0, 1, 7, DARK); rect(b, 37, flagF % 2, 7, 4, DARK);
+}, 72, 60);
+
+const barracks = (banner, flagF) => building((b) => {
+  rect(b, 0, 22, 74, 34, LIGHT); rect(b, 0, 18, 74, 5, DARK);
+  [6, 22, 46, 60].forEach((x) => box(b, x, 30, 9, 8, PAPER));
+  box(b, 31, 34, 12, 22, MID);
+  rect(b, 70, 0, 1, 18, DARK); rect(b, 62, 1 + (flagF % 2), 8, 5, MID);
+  if (banner) { rect(b, 16, 6, 42, 10, DARK); rect(b, 18, 8, 38, 6, PAPER); rect(b, 22, 10, 30, 2, MID); }
+}, 74, 56);
+
+const shop = () => building((b) => {
+  rect(b, 0, 16, 64, 40, PAPER);
+  for (let x = 0; x < 64; x += 8) { rect(b, x, 8, 4, 9, DARK); rect(b, x + 4, 8, 4, 9, LIGHT); }
+  box(b, 6, 24, 26, 18, LIGHT); rect(b, 7, 32, 24, 1, MID);
+  box(b, 40, 26, 16, 30, MID); put(b, 52, 41, PAPER);
+  box(b, 9, 45, 19, 9, PAPER); text(b, 11, 47, "OPEN", DARK);
+}, 64, 56);
+
+const bootcamp = () => building((b) => {
+  rect(b, 0, 10, 72, 50, PAPER); rect(b, 0, 10, 72, 12, DARK);
+  text(b, 30, 14, "</>", PAPER);
+  box(b, 6, 28, 26, 16, DARK); rect(b, 9, 31, 10, 1, LIGHT); rect(b, 9, 34, 16, 1, LIGHT); rect(b, 9, 37, 7, 1, LIGHT);
+  box(b, 40, 28, 26, 16, DARK); rect(b, 43, 31, 14, 1, LIGHT); rect(b, 43, 34, 9, 1, LIGHT); rect(b, 43, 37, 18, 1, LIGHT);
+  box(b, 29, 46, 14, 14, MID);
+}, 72, 60);
+
+const desk = (f) => building((b) => {
+  rect(b, 0, 30, 64, 4, MID); rect(b, 3, 34, 3, 20, MID); rect(b, 58, 34, 3, 20, MID);
+  box(b, 18, 2, 30, 22, DARK); rect(b, 20, 4, 26, 18, DARK);
+  rect(b, 23, 7, 8, 1, LIGHT); rect(b, 23, 10, 14, 1, LIGHT); rect(b, 25, 13, 10, 1, LIGHT); rect(b, 23, 16, 6 + (f % 3) * 3, 1, LIGHT);
+  rect(b, 31, 24, 4, 6, MID); rect(b, 26, 29, 14, 1, MID);
+  rect(b, 50, 20, 8, 10, LIGHT); rect(b, 53, 12, 2, 8, MID); put(b, 52, 13, PAPER); put(b, 56, 15, PAPER);
+}, 64, 54);
+
+// ==================== 장면: 하늘 → 땅 → 건물 → 연출 → 캐릭터 ====================
+
+const CHARACTER_X = 44;
+const LANDMARK_X = 108;
+
+// ---- 장면별 동작: 중간에서 시작해 [중간 동작, 마무리 동작] 순서로 재생 ----
+
+/**
+ * Share of a scene's scroll at which its action starts. The player then plays
+ * the two frames on a timer, so a fast scroll never skips them.
+ */
+const SALUTE_TRIGGER = 0.5;
+
+const ACTIONS = {
+  high: ["lift", "cheer"],
+  univ: ["pencilRest", "writing"],
+  grad: ["capHold", "capToss"],
+  army: ["raise", "salute"],
+  discharge: ["raise", "lowered"],
+  business: ["umbrellaUp", "umbrellaOpen"],
+  bootcamp: ["listen", "talk"],
+  now: ["typeReady", "typing"],
+};
+
+/** The refined uniform: same face and body as the first draft, new kit. */
+const SOLDIER_V2 = { age: "adult", outfit: "#55663a", hat: "helmet2", camo2: true, uniform: true, belt: true };
+
+/** The refined school uniform: blazer, white shirt collar and tie; same face and body. */
+const STUDENT_V2 = { age: "teen", outfit: "#475569", blazer: true, prop: "diploma" };
+
+/** Refined outfits for every stage; the face and body never change. */
+const LOOKS_V2 = {
+  high: STUDENT_V2,
+  univ: { age: "adult", outfit: "#3b82f6", tee: true },
+  grad: { age: "adult", outfit: "#475569", stole: true, hat: "grad", prop: "diploma" },
+  army: SOLDIER_V2,
+  discharge: { age: "adult", outfit: "#4d5d33", dress: true, hat: "beret" },
+  business: { age: "adult", outfit: "#6b7280", blazer: true, mood: "tired" },
+  bootcamp: { age: "adult", outfit: "#c2410c", hood: true },
+  now: { age: "adult", outfit: "#14b8a6", hood: true, prop: "laptop" },
+};
+
+/** The pose by scroll position alone, for thumbnails and exports that have no timer. */
+function actionPoseFor(key, progress) {
+  if (progress < SALUTE_TRIGGER) return null;
+  const [middle, last] = ACTIONS[key];
+  return progress < SALUTE_TRIGGER + 0.04 ? middle : last;
+}
+
+// ---- 장면 연출: 동작이 끝난 뒤 하늘과 주변 ----
+
+function drawPetals(g, f) {
+  for (let i = 0; i < 14; i++) {
+    const x = (i * 23 + f * 3) % W;
+    const y = 6 + ((i * 37 + f * 7) % 100);
+    put(g, x, y, i % 3 === 0 ? MID : LIGHT);
+    put(g, x + 1, y, LIGHT);
+  }
+}
+
+function drawConfetti(g, f) {
+  for (let i = 0; i < 14; i++) put(g, 12 + i * 10 + (i % 3), 14 + ((f * 5 + i * 13) % 70), i % 2 ? MID : LIGHT);
+}
+
+function drawSparkles(g, f) {
+  [[18, 50], [72, 40], [24, 80], [70, 72], [46, 30]].forEach(([x, y], i) => {
+    if ((f + i) % 2 === 1) return;
+    put(g, x, y, DARK);
+    [[-1, 0], [1, 0], [0, -1], [0, 1]].forEach(([dx, dy]) => put(g, x + dx, y + dy, MID));
+  });
+}
+
+/** Rain over the whole sky; with the umbrella open, none falls under its canopy. */
+function drawRain(g, f, sheltered) {
+  for (let i = 0; i < 26; i++) {
+    const x = 4 + i * 6;
+    const y = 46 + ((f * 4 + i * 9) % 66);
+    if (sheltered && x >= CHARACTER_X - 7 && x <= CHARACTER_X + 19 && y >= 70) continue;
+    put(g, x, y, MID);
+    put(g, x, y + 1, MID);
+  }
+}
+
+// ---- 부트캠프: 팀 프로젝트실에서 함께 코딩하다가, 중간부터 둘러앉아 대화 ----
+
+/** Teammates on either side of me at the same table. */
+const TEAMMATES = [
+  { x: 26, look: { age: "adult", outfit: "#60a5fa", tee: true, hairStyle: "ponytail", hairColor: "#9a6334" } },
+  { x: 96, look: { age: "adult", outfit: "#15803d", hood: true, hairStyle: "spiky", hairColor: "#a0703c" } },
+];
+const ME_AT_TABLE_X = 61;
+const TABLE_TOP = GROUND - 9;
+const TALK_BUBBLE_Y = 67;
+
+/** Who speaks in turn once the talk starts: left teammate, right teammate, then me. */
+const SPEAKING_ORDER = [1, 2, 0];
+
+/**
+ * Everyone codes behind their laptops; from the middle we talk it over, the
+ * speech bubble passing around the table while the speaker bobs.
+ */
+function drawTeamProject(g, f, look, pose) {
+  const people = [{ x: ME_AT_TABLE_X, look }, ...TEAMMATES];
+  const speaker = pose === "listen" ? SPEAKING_ORDER[0] : pose === "talk" ? SPEAKING_ORDER[f % 3] : -1;
+  drawTeamRoom(g);
+  people.forEach((person, i) =>
+    placeCharacter(g, buildCharacter(person.look, f, 0, null), person.x, i === speaker ? 2 : 0));
+  drawTeamTable(g, f, pose === null);
+  people.forEach((person, i) => drawHandsOnLaptop(g, person.x, f + i, pose === null, i === speaker));
+  if (speaker >= 0) drawTalkBubble(g, people[speaker].x, TALK_BUBBLE_Y);
+}
+
+/** A sign on the wall behind us that just says BootCamp. */
+function drawTeamRoom(g) {
+  box(g, 40, 18, 82, 26, DARK, DARK);
+  rect(g, 42, 20, 78, 1, MID);
+  rect(g, 42, 41, 78, 1, MID);
+  text(g, 48, 26, "BootCamp", PAPER, 2);
+}
+
+/** One long table with an open laptop in front of each of us; while coding, the logos blink in turn. */
+function drawTeamTable(g, f, coding) {
+  box(g, 10, TABLE_TOP, 104, GROUND - TABLE_TOP + 1, MID, DARK);
+  rect(g, 10, TABLE_TOP + 2, 104, 1, DARK);
+  [ME_AT_TABLE_X, TEAMMATES[0].x, TEAMMATES[1].x].forEach((x, i) => {
+    box(g, x - 7, TABLE_TOP - 9, 14, 9, MID, DARK);
+    const lit = !coding || (f + i) % 3 !== 0;
+    put(g, x, TABLE_TOP - 5, lit ? PAPER : LIGHT);
+  });
+}
+
+/**
+ * Hands on either side of the laptop: while coding they take turns tapping the
+ * keys, while talking the speaker lifts them to gesture and the others rest.
+ */
+function drawHandsOnLaptop(g, x, f, coding, speaking) {
+  const y = TABLE_TOP - 4;
+  const leftUp = coding ? (f % 2) * 2 : speaking ? 5 : 0;
+  const rightUp = coding ? ((f + 1) % 2) * 2 : speaking ? 2 + (f % 2) * 4 : 0;
+  box(g, x - 10, y - leftUp, 4, 4, LIGHT, DARK);
+  box(g, x + 7, y - rightUp, 4, 4, LIGHT, DARK);
+}
+
+/** A speech bubble with three dots and a tail pointing down at the speaker. */
+function drawTalkBubble(g, cx, y) {
+  box(g, cx - 7, y, 15, 7, PAPER, DARK);
+  put(g, cx - 1, y + 7, DARK);
+  put(g, cx - 1, y + 8, DARK);
+  [-3, 0, 3].forEach((dx) => put(g, cx + dx, y + 3, DARK));
+}
+
+// ---- 대학 진학: 강의실 책상에 앉아 연필로 필기 ----
+
+const DESK_TOP = GROUND - 9;
+
+/** A chalkboard with scribbles and a window, so the scene reads as a lecture room. */
+function drawClassroom(g, f) {
+  box(g, 84, 40, 64, 36, MID, DARK);
+  [[90, 48, 22], [90, 54, 30], [90, 60, 16], [120, 48, 20], [120, 58, 14]].forEach(([x, y, w]) => rect(g, x, y, w, 1, PAPER));
+  rect(g, 84, 76, 64, 2, DARK);
+  rect(g, 132, 75, 6, 1, PAPER);
+  box(g, 8, 26, 28, 30, LIGHT, DARK);
+  rect(g, 21, 26, 2, 30, DARK);
+  rect(g, 8, 40, 28, 2, DARK);
+}
+
+/** Me sitting behind a desk with a notebook: the desk front hides my legs, lines appear while I write. */
+function drawSeatedStudent(g, f, look, pose) {
+  const cx = CHARACTER_X;
+  // Chair back peeking out behind my shoulder.
+  rect(g, cx - 13, DESK_TOP - 12, 3, 12, DARK);
+  rect(g, cx - 12, DESK_TOP - 11, 1, 10, MID);
+  placeCharacter(g, buildCharacter(look, f, 0, pose ?? "pencilRest"), cx);
+  // Desk top and its solid front panel.
+  box(g, cx - 18, DESK_TOP, 38, GROUND - DESK_TOP + 1, MID, DARK);
+  rect(g, cx - 18, DESK_TOP + 2, 38, 1, DARK);
+  // Notebook lying on the desk.
+  box(g, cx - 6, DESK_TOP - 3, 16, 3, PAPER, DARK);
+  if (pose === "writing") for (let i = 0; i <= f % 4; i++) put(g, cx - 4 + i * 2, DESK_TOP - 2, MID);
+}
+
+/** Poses held before a scene's action starts; the others stand still. */
+const REST_POSES = { discharge: "salute" };
+
+/** Draws "me" for a scene, with the small loops that follow a finished action. */
+function drawActor(g, key, f, look, pose) {
+  const finished = pose === ACTIONS[key][1];
+  const shownPose = pose ?? REST_POSES[key] ?? null;
+  const shownLook = key === "business" && finished ? { ...look, mood: undefined } : look;
+  const hop = key === "high" && finished && f % 2 === 1 ? 3 : 0;
+  placeCharacter(g, buildCharacter(shownLook, f, 0, shownPose), CHARACTER_X, hop);
+}
+
+/** `progress` is how far the reader has scrolled through this scene, from 0 to 1. */
+function drawScene(index, f, progress = 1, options = {}) {
+  const key = SCENES[index].key;
+  const look = options.look ?? LOOKS_V2[key];
+  const pose = "pose" in options ? options.pose : actionPoseFor(key, progress);
+  const finished = pose === ACTIONS[key][1];
+  const night = key === "now";
+  const g = makeGrid(W, H, night ? DARK : PAPER);
+
+  if (night) {
+    disc(g, 132, 22, 7, PAPER); disc(g, 135, 20, 6, DARK);
+    [[20, 14], [48, 30], [74, 12], [98, 36], [150, 46], [30, 52], [112, 8]].forEach(([x, y], i) => {
+      put(g, x, y, PAPER);
+      if ((f + i) % 3 === 0) [[-1, 0], [1, 0], [0, -1], [0, 1]].forEach(([dx, dy]) => put(g, x + dx, y + dy, LIGHT));
+    });
+  } else if (key === "business") {
+    rect(g, 0, 0, W, 44, LIGHT);
+    cloud(g, 6, 8); cloud(g, 96, 14);
+  } else if (key !== "univ" && key !== "bootcamp") {
+    // Indoor scenes (lecture room, team project room) have no sky.
+    cloud(g, 10 + (f % 2), 16); cloud(g, 112 - (f % 2), 30);
+  }
+  ground(g, night);
+
+  switch (key) {
+    case "high":
+      standOnGround(g, school(true), LANDMARK_X);
+      flowers(g, [66, 70, 74]);
+      if (finished) drawPetals(g, f);
+      break;
+    case "univ":
+      drawClassroom(g, f);
+      drawSeatedStudent(g, f, look, pose);
+      return g;
+    case "grad":
+      standOnGround(g, university(f), LANDMARK_X);
+      [[24, 22], [62, 12], [84, 28]].forEach(([x, y], i) => {
+        const dy = ((f + i) % 2) * 3;
+        rect(g, x - 3, y + dy, 7, 1, DARK); rect(g, x - 1, y + 1 + dy, 3, 2, DARK); put(g, x + 3, y + 1 + dy, MID);
+      });
+      break;
+    case "army": standOnGround(g, barracks(false, f), LANDMARK_X); break;
+    case "discharge":
+      standOnGround(g, barracks(true, f), LANDMARK_X);
+      if (finished) drawConfetti(g, f);
+      break;
+    case "business":
+      standOnGround(g, shop(), LANDMARK_X);
+      drawRain(g, f, finished);
+      rect(g, CHARACTER_X + 12, GROUND - 1, 10, 1, MID);
+      break;
+    case "bootcamp":
+      drawTeamProject(g, f, look, pose);
+      return g;
+    case "now":
+      standOnGround(g, desk(f), LANDMARK_X + 4);
+      // Monitor glow behind me, so the dark outline stands out from the night sky.
+      disc(g, CHARACTER_X, GROUND - 26, 22, MID);
+      break;
+  }
+
+  drawActor(g, key, f, look, pose);
+  return g;
+}
+
+// ==================== 그리기: 격자를 팔레트 색으로 칠하기 ====================
+
+let palette = PALETTES[0];
+
+function paint(canvas, grid) {
+  const ctx = canvas.getContext("2d");
+  const image = ctx.createImageData(grid.w, grid.h);
+  const rgb = palette.colors.map((hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)));
+  grid.px.forEach((v, i) => {
+    const [r, gg, b] = rgb[v ?? PAPER];
+    image.data.set([r, gg, b, 255], i * 4);
+  });
+  ctx.putImageData(image, 0, 0);
+}
+
+// ==================== 플레이어: 스크롤 진행에 맞춰 장면 그리기 ====================
+
+/** Scroll distance given to each scene, in viewport heights. */
+const SCROLL_PER_SCENE_VH = 140;
+
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const canvases = [document.getElementById("canvas-a"), document.getElementById("canvas-b")];
+const journey = document.getElementById("journey");
+const progressBar = document.getElementById("scene-progress");
+const dotsRoot = document.getElementById("dots");
+const sheetRoot = document.getElementById("sheet");
+const palettesRoot = document.getElementById("palettes");
+let front = 0;
+let current = 0;
+let sceneProgress = 0;
+let tick = 0;
+let actionPose = null;
+let actionScene = null;
+let actionTimers = [];
+
+/** Every scene's action: the middle frame right away, the last one 180 ms later. */
+const SCENE_ACTIONS = Object.fromEntries(Object.entries(ACTIONS).map(([key, [middle, last]]) =>
+  [key, { steps: [[0, middle], [180, last]], still: last }]));
+
+journey.style.height = `${SCENES.length * SCROLL_PER_SCENE_VH}vh`;
+
+// ---- 준비: 바로 가기 칸·장면 모음·팔레트 버튼 만들기 ----
+
+SCENES.forEach((scene, i) => {
+  const dot = document.createElement("button");
+  dot.type = "button";
+  dot.setAttribute("aria-label", `${i + 1}번째 장면: ${scene.label}`);
+  dot.addEventListener("click", () => scrollToScene(i));
+  dotsRoot.appendChild(dot);
+
+  const thumb = document.createElement("button");
+  thumb.type = "button";
+  thumb.className = "thumb";
+  thumb.setAttribute("aria-label", `${scene.label} 장면으로 이동`);
+  thumb.innerHTML = `<canvas width="160" height="144" aria-hidden="true"></canvas><span class="num">${String(i + 1).padStart(2, "0")}${scene.period ? " · " + scene.period : ""}</span><span class="label">${scene.label}</span>`;
+  thumb.addEventListener("click", () => scrollToScene(i));
+  sheetRoot.appendChild(thumb);
+});
+
+PALETTES.forEach((p) => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.innerHTML = `<span class="chips">${p.colors.map((c) => `<span style="background:${c}"></span>`).join("")}</span>${p.name}`;
+  b.addEventListener("click", () => setPalette(p));
+  palettesRoot.appendChild(b);
+});
+
+// ---- 스크롤: 지금 장면과 장면 안 진행도 계산 ----
+
+function readScroll() {
+  const scrollable = journey.offsetHeight - window.innerHeight;
+  const overall = Math.min(Math.max(-journey.getBoundingClientRect().top / scrollable, 0), 1);
+  const position = overall * SCENES.length;
+  const index = Math.min(Math.floor(position), SCENES.length - 1);
+  return { index, progress: Math.min(position - index, 1) };
+}
+
+function scrollToScene(index) {
+  const top = journey.getBoundingClientRect().top + window.scrollY;
+  const scrollable = journey.offsetHeight - window.innerHeight;
+  window.scrollTo({
+    top: top + (scrollable * index) / SCENES.length + 2,
+    behavior: reduceMotion ? "auto" : "smooth",
+  });
+}
+
+function onScroll() {
+  const { index, progress } = readScroll();
+  sceneProgress = progress;
+  if (index !== current) fadeTo(index);
+  else render();
+  updateAction();
+}
+
+/** Starts a scene's action on a timer when the scene passes its midpoint (salute, cheer). */
+function updateAction() {
+  const key = SCENES[current].key;
+  const action = SCENE_ACTIONS[key];
+  const triggered = action && sceneProgress >= SALUTE_TRIGGER ? key : null;
+  if (triggered === actionScene) return;
+  actionScene = triggered;
+  actionTimers.forEach(clearTimeout);
+  const steps = !triggered ? [[0, null]] : reduceMotion ? [[0, action.still]] : action.steps;
+  actionTimers = steps.map(([ms, pose]) => setTimeout(() => {
+    actionPose = pose;
+    render();
+  }, ms));
+}
+
+// ---- 그리기: 지금 장면을 칠하고, 장면이 바뀌면 페이드 ----
+
+function render() {
+  paint(canvases[front], drawScene(current, tick % 4, sceneProgress, { pose: actionPose }));
+  progressBar.style.width = `${sceneProgress * 100}%`;
+}
+
+function fadeTo(index) {
+  current = index;
+  const back = 1 - front;
+  paint(canvases[back], drawScene(current, tick % 4, sceneProgress, { pose: actionPose }));
+  canvases[back].style.opacity = "1";
+  canvases[front].style.opacity = "0";
+  canvases[back].removeAttribute("aria-hidden");
+  canvases[back].setAttribute("role", "img");
+  canvases[front].setAttribute("aria-hidden", "true");
+  canvases[front].removeAttribute("role");
+  front = back;
+  progressBar.style.width = `${sceneProgress * 100}%`;
+  updateText();
+}
+
+function setPalette(p) {
+  palette = p;
+  [...palettesRoot.children].forEach((b, i) => b.setAttribute("aria-pressed", String(PALETTES[i] === p)));
+  document.documentElement.style.setProperty("--screen-0", p.colors[0]);
+  document.documentElement.style.setProperty("--screen-3", p.colors[3]);
+  render();
+  [...sheetRoot.children].forEach((thumb, i) => paint(thumb.querySelector("canvas"), drawScene(i, 0)));
+}
+
+function updateText() {
+  const scene = SCENES[current];
+  document.getElementById("dialog-meta").textContent = `STEP ${String(current + 1).padStart(2, "0")}${scene.period ? " · " + scene.period : ""}`;
+  document.getElementById("dialog-title").textContent = scene.title;
+  document.getElementById("dialog-desc").textContent = scene.desc;
+  document.getElementById("step-count").textContent = `${String(current + 1).padStart(2, "0")} / ${String(SCENES.length).padStart(2, "0")}`;
+  canvases[front].setAttribute("aria-label", `${scene.label} 장면`);
+  [...dotsRoot.children].forEach((d, i) => (i === current ? d.setAttribute("aria-current", "step") : d.removeAttribute("aria-current")));
+  [...sheetRoot.children].forEach((t, i) => t.setAttribute("aria-current", String(i === current)));
+}
+
+// ---- 시작: 스크롤·화면 크기 변화를 듣고 작은 반복 연출 돌리기 ----
+
+let scrollQueued = false;
+window.addEventListener("scroll", () => {
+  if (scrollQueued) return;
+  scrollQueued = true;
+  requestAnimationFrame(() => {
+    scrollQueued = false;
+    onScroll();
+  });
+}, { passive: true });
+window.addEventListener("resize", onScroll);
+
+let lastTick = 0;
+function loop(time) {
+  if (time - lastTick > 420) {
+    tick += 1;
+    lastTick = time;
+    render();
+  }
+  requestAnimationFrame(loop);
+}
+
+setPalette(palette);
+updateText();
+onScroll();
+if (!reduceMotion) requestAnimationFrame(loop);
+</script>
