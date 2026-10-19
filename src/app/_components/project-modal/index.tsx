@@ -10,19 +10,17 @@ import {
 import type { Project } from "@/data/projects";
 import { dancingScript } from "@/lib/fonts";
 
-import { DohyukDevModalContent } from "./content/dohyuk-dev-modal-content";
-import { EslintKrModalContent } from "./content/eslint-kr-modal-content";
-import { GentleLionModalContent } from "./content/gentle-lion-modal-content";
+import { FrontieModalContent } from "./content/frontie-modal-content";
 import { KantoModalContent } from "./content/kanto-modal-content";
+import { MarkdownBlockPreviewModalContent } from "./content/markdown-block-preview-modal-content";
 
 const modalContentBySlug: Record<
   string,
   React.ComponentType<{ project: Project }>
 > = {
   kanto: KantoModalContent,
-  "dohyuk-dev": DohyukDevModalContent,
-  "gentle-lion": GentleLionModalContent,
-  "eslint-kr": EslintKrModalContent,
+  frontie: FrontieModalContent,
+  "markdown-block-preview": MarkdownBlockPreviewModalContent,
 };
 
 export function ProjectModal({
