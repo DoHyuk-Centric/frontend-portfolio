@@ -3,7 +3,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FolderKanban, ListTodo, PanelLeftIcon } from "lucide-react";
+import { FolderKanban, IdCard, ListTodo, PanelLeftIcon } from "lucide-react";
 
 import { portfolioSections } from "@/data/portfolio-sections";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -31,6 +31,7 @@ import {
 
 const navItems = [
   { title: "Portfolio", url: "/", icon: FolderKanban },
+  { title: "Profile", url: "/profile", icon: IdCard },
   { title: "Calendar", url: "/calendar", icon: ListTodo },
 ];
 
