@@ -1,4 +1,13 @@
-import { Code2, Hammer, Wrench, Lightbulb } from "lucide-react";
+import {
+  Code2,
+  Hammer,
+  LayoutGrid,
+  Route,
+  Star,
+  Store,
+  Wrench,
+  Lightbulb,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -6,12 +15,141 @@ import type { Project } from "@/data/projects";
 
 import { ProjectImageCarousel } from "../project-image-carousel";
 import { ProjectModalHeader } from "../project-modal-header";
+import {
+  FeatureGrid,
+  FlowSteps,
+  Highlight,
+  ModalSection,
+  ProjectLinks,
+  ServicePitch,
+  StrengthList,
+  type ServiceFeature,
+  type ServiceStrength,
+} from "../project-section";
+
+const features: ServiceFeature[] = [
+  {
+    title: "메인 피드",
+    description:
+      "통합 검색과 히어로 배너, 지금 열린 번개모임, 카테고리별 인기 목록을 첫 화면에서 한눈에 볼 수 있습니다.",
+    image: {
+      src: "/project/kanto/features/main.webp",
+      alt: "Kanto 메인 화면, 구인구직 배너와 통합 검색창",
+      width: 1280,
+      height: 720,
+    },
+  },
+  {
+    title: "구인구직",
+    description:
+      "필리핀 현지 한인 업체의 공고를 급여·근무 시간·마감일(D-N)과 함께 표로 비교할 수 있습니다.",
+    image: {
+      src: "/project/kanto/features/job.webp",
+      alt: "Kanto 구인구직 목록, 회사·공고 제목·급여·근무 시간이 표로 정리된 화면",
+      width: 1280,
+      height: 720,
+    },
+  },
+  {
+    title: "중고거래 · 부동산",
+    description:
+      "카테고리와 지역으로 필터링하고, 매물 위치는 Google Maps로 확인합니다. 등록 이미지는 AI로 검수합니다.",
+    image: {
+      src: "/project/kanto/features/rental.webp",
+      alt: "Kanto 부동산 목록, 콘도·스튜디오 매물 사진과 월세가 카드로 표시된 화면",
+      width: 1280,
+      height: 720,
+    },
+  },
+  {
+    title: "칸토고 (번개모임)",
+    description:
+      "지도에 모임 핀을 꽂아 동네 사람들과 바로 모이고, 참여하면 실시간 그룹 채팅으로 이어집니다.",
+    image: {
+      src: "/project/kanto/features/kantogo.webp",
+      alt: "Kanto GO 지도 화면, 마닐라 곳곳의 모임 핀과 'BGC 삼겹살 번개' 상세 정보",
+      width: 1280,
+      height: 720,
+    },
+  },
+  {
+    title: "채팅 · 안전결제",
+    description:
+      "판매자와 1:1로 대화하다가 채팅 안에서 바로 안전결제를 요청하고, 결제부터 수령 확인까지 이어서 진행합니다.",
+    image: {
+      src: "/project/kanto/features/chat.webp",
+      alt: "Kanto 채팅방, 원목 좌식 테이블 거래 중 에스크로 보관 중인 안전결제 카드와 수령 확인 버튼",
+      width: 1280,
+      height: 720,
+    },
+  },
+  {
+    title: "다국어",
+    description:
+      "한국어·영어·필리핀어를 전환할 수 있어 현지인과도 함께 거래할 수 있습니다.",
+    image: {
+      src: "/project/kanto/features/i18n.webp",
+      alt: "Kanto 중고거래 화면이 영어(Marketplace)로 전환된 모습과 언어 선택 버튼",
+      width: 1280,
+      height: 720,
+    },
+  },
+  {
+    title: "관리자",
+    description:
+      "KPI 대시보드와 사용자·게시글·신고·결제 관리로, 신고된 게시글을 확인하고 비활성화까지 한 화면에서 처리합니다.",
+    image: {
+      src: "/project/kanto/features/admin.webp",
+      alt: "Kanto 관리자 신고 처리 화면, 신고 내용과 처리 로그, 게시글 비활성화 옵션",
+      width: 1280,
+      height: 720,
+    },
+  },
+];
+
+const tradeFlow = [
+  "1:1 채팅",
+  "결제 요청",
+  "에스크로 보관",
+  "수령 확인",
+  "정산",
+  "상호 리뷰",
+];
+
+const strengths: ServiceStrength[] = [
+  {
+    title: "흩어진 생활 정보를 한곳에",
+    description:
+      "Facebook 그룹마다 흩어져 있던 중고거래·구인구직·부동산 정보를 하나의 서비스에서 찾고 관리합니다.",
+  },
+  {
+    title: "선입금 사기를 막는 안전결제",
+    description:
+      "구매자가 수령을 확인하기 전까지 플랫폼이 대금을 보관해, 돈만 받고 사라지는 거래를 막습니다.",
+  },
+  {
+    title: "믿고 거래하는 망고 지수",
+    description:
+      "\"당근 온도\"처럼 거래 상대의 신뢰도를 망고 지수라는 점수로 보여줘, 처음 만나는 사람과도 안심하고 거래합니다.",
+  },
+  {
+    title: "온라인에서 오프라인으로",
+    description:
+      "칸토고 번개모임으로 같은 동네에 사는 한인들이 실제로 만나 교류할 수 있습니다.",
+  },
+];
 
 export function KantoModalContent({ project }: { project: Project }) {
   return (
     <div className="flex flex-col gap-6">
       <ProjectImageCarousel
         images={[
+          {
+            kind: "video",
+            src: "/project/kanto/kanto-demo.mp4",
+            poster: "/project/kanto/kanto-demo-poster.webp",
+            alt: "Kanto 서비스 소개 영상",
+          },
           { src: "/project/kanto/KantoMain.webp", alt: "Kanto 대표 이미지 1" },
           { src: "/project/kanto/KantoLogin.webp", alt: "Kanto 대표 이미지 2" },
           { src: "/project/kanto/KantoAdmin.webp", alt: "Kanto 대표 이미지 3" },
@@ -19,37 +157,50 @@ export function KantoModalContent({ project }: { project: Project }) {
       />
 
       <ProjectModalHeader project={project} />
-      <div className="flex flex-col gap-2">
-        <div className="flex gap-4 justify-center">
-          <Link
-            href="https://kanto-iota.vercel.app/main"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
-          >
-            서비스 페이지
-          </Link>
-          <Link
-            href="https://kanto-iota.vercel.app/admin"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
-          >
-            관리자 페이지
-          </Link>
-          <Link
-            href="https://github.com/FRONTENDBOOTCAMP-17th/kanto"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
-          >
-            Github
-          </Link>
-        </div>
-        <div className="flex justify-center text-muted-foreground">
-          임시 계정: asdf1234@naver.com / asdf1234
-        </div>
-      </div>
+      <ProjectLinks
+        links={[
+          { label: "서비스 페이지", href: "https://kanto-pi.vercel.app" },
+          { label: "관리자 페이지", href: "https://kanto-pi.vercel.app/admin" },
+          {
+            label: "Github",
+            href: "https://github.com/FRONTENDBOOTCAMP-17th/kanto",
+          },
+        ]}
+        note="테스트 계정: test1234@naver.com / test1234"
+      />
+
+      <ModalSection icon={Store} title="어떤 서비스인가요?">
+        <ServicePitch headline="칸토 하나로 필리핀 생활 끝.">
+          <p>
+            Kanto는 필리핀어로 &quot;우리 동네&quot;라는 뜻으로,{" "}
+            <Highlight>필리핀에 거주 중인 한인을 위한 생활 커뮤니티 플랫폼</Highlight>
+            입니다. 중고거래, 구인구직, 부동산, 동네 모임까지 필리핀 생활에
+            필요한 정보를 한곳에서 찾을 수 있습니다.
+          </p>
+          <p>
+            필리핀에 사는 한국인은 약 5.3만 명이지만, 생활 정보는 대부분
+            Facebook 그룹에 흩어져 있어 한눈에 보기 어렵고, 처음 보는 사람과의
+            거래는 믿기 어렵습니다. Kanto는 이 두 가지 불편에서 출발했습니다.
+          </p>
+        </ServicePitch>
+      </ModalSection>
+
+      <ModalSection icon={LayoutGrid} title="주요 기능">
+        <FeatureGrid features={features} />
+      </ModalSection>
+
+      <ModalSection icon={Route} title="안전한 거래 흐름">
+        <p>
+          거래는 채팅에서 시작해 채팅 안에서 끝납니다. 필리핀 현지 결제 서비스
+          Xendit의 에스크로를 이용해, 물건을 받기 전까지 대금은 플랫폼이
+          보관합니다.
+        </p>
+        <FlowSteps steps={tradeFlow} />
+      </ModalSection>
+
+      <ModalSection icon={Star} title="Kanto의 강점">
+        <StrengthList strengths={strengths} />
+      </ModalSection>
 
       <div className="group flex flex-col gap-2 px-4 mt-4">
         <h3 className="flex items-center gap-2 font-bold text-xl text-foreground">
@@ -218,7 +369,7 @@ export function KantoModalContent({ project }: { project: Project }) {
       <div className="group flex flex-col gap-2 px-4 my-8">
         <h3 className="flex items-center gap-2 font-bold text-xl text-foreground">
           <Wrench className="size-6 text-blue-500 opacity-0 transition-opacity group-hover:opacity-100" />
-          기능
+          기능 구현
         </h3>
         <div className="text-base text-muted-foreground px-12 flex flex-col gap-4">
           <ul className="flex list-disc flex-col gap-3 pl-4">
