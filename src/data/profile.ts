@@ -4,6 +4,12 @@ export type ProfileTimelineItem = {
   note?: string;
 };
 
+/** One sentence of the introduction; `point` is the phrase inside it to highlight. */
+export type ProfileSentence = {
+  text: string;
+  point: string;
+};
+
 export type ProfileContact = {
   label: string;
   value: string;
@@ -16,10 +22,19 @@ export const profile = {
   photo: "/profile/dohyuk.webp",
   tagline: "어제의 나를 리팩토링하는 개발자",
   introduction: [
-    "겸손과 배움을 가치관으로 삼아, 모든 행동에는 배울 점이 있다고 믿으며 존중하는 태도를 중요하게 생각합니다.",
-    "다양한 실패를 양분 삼아 더 나은 해결책을 찾아낸 경험이 있습니다.",
-    "자료를 기반으로 문제에 접근하고, 더 나은 결과를 내고 싶은 욕심이 있습니다.",
-  ],
+    {
+      text: "겸손과 배움을 가치관으로 삼아, 모든 행동에는 배울 점이 있다고 믿으며 존중하는 태도를 중요하게 생각합니다.",
+      point: "겸손과 배움",
+    },
+    {
+      text: "다양한 실패를 양분 삼아 더 나은 해결책을 찾아낸 경험이 있습니다.",
+      point: "실패를 양분 삼아",
+    },
+    {
+      text: "자료를 기반으로 문제에 접근하고, 더 나은 결과를 내고 싶은 욕심이 있습니다.",
+      point: "자료를 기반으로",
+    },
+  ] satisfies ProfileSentence[],
   skills: [
     "React",
     "Next.js",

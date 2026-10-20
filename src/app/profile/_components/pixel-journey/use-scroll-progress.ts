@@ -2,10 +2,7 @@
 
 import { useEffect, useState, useSyncExternalStore, type RefObject } from "react";
 
-/**
- * How far the page has scrolled through `ref`'s element, from 0 (its top
- * reaches the viewport top) to 1 (its bottom reaches the viewport bottom).
- */
+/** How far `ref`'s scroll container has scrolled, from 0 (top) to 1 (bottom). */
 export function useScrollProgress(ref: RefObject<HTMLElement | null>) {
   const [progress, setProgress] = useState(0);
 
@@ -17,22 +14,22 @@ export function useScrollProgress(ref: RefObject<HTMLElement | null>) {
       const element = ref.current;
       if (!element) return;
 
-      const rect = element.getBoundingClientRect();
-      const scrollable = rect.height - window.innerHeight;
+      const scrollable = element.scrollHeight - element.clientHeight;
       if (scrollable <= 0) return;
-      setProgress(Math.min(Math.max(-rect.top / scrollable, 0), 1));
+      setProgress(Math.min(Math.max(element.scrollTop / scrollable, 0), 1));
     };
 
     const scheduleMeasure = () => {
       if (!frame) frame = requestAnimationFrame(measure);
     };
 
+    const element = ref.current;
     scheduleMeasure();
-    window.addEventListener("scroll", scheduleMeasure, { passive: true });
+    element?.addEventListener("scroll", scheduleMeasure, { passive: true });
     window.addEventListener("resize", scheduleMeasure);
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", scheduleMeasure);
+      element?.removeEventListener("scroll", scheduleMeasure);
       window.removeEventListener("resize", scheduleMeasure);
     };
   }, [ref]);

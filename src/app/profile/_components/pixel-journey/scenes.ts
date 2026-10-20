@@ -9,6 +9,7 @@ import {
   SCREEN,
   box,
   disc,
+  get,
   makeGrid,
   outline,
   put,
@@ -110,6 +111,25 @@ export function drawScene(key: LifeStageKey, f: number, pose: Pose | null): Grid
 
   drawActor(g, key, f, look, pose);
   return g;
+}
+
+/** Today's me without the laptop, cropped to the sprite with a one-pixel margin, for the save file card. */
+export function drawPlayerPortrait(): Grid<Shade> {
+  const sprite = buildCharacter({ ...LOOKS.now, prop: undefined }, 0);
+  const xs: number[] = [];
+  const ys: number[] = [];
+  for (let y = 0; y < sprite.h; y++) {
+    for (let x = 0; x < sprite.w; x++) {
+      if (get(sprite, x, y) === null) continue;
+      xs.push(x);
+      ys.push(y);
+    }
+  }
+  const left = Math.min(...xs) - 1;
+  const top = Math.min(...ys) - 1;
+  const portrait = makeGrid<Shade>(Math.max(...xs) - left + 2, Math.max(...ys) - top + 2);
+  stamp(portrait, sprite, -left, -top);
+  return portrait;
 }
 
 /** Draws "me" for a scene, with the small loops that follow a finished action. */

@@ -1,59 +1,89 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 
 import { lifeStages, type LifeStageKey } from "@/data/life-timeline";
 import { dotGothic } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 
 import type { Pose } from "./character";
-import { PAPER, type Grid, type Shade } from "./pixel-grid";
+import { paintGrid } from "./pixel-grid";
 import { ACTIONS, ACTION_TRIGGER, drawScene } from "./scenes";
 import { usePrefersReducedMotion, useScrollProgress } from "./use-scroll-progress";
 
-/** Scroll distance given to each life stage, in viewport heights. */
-const SCROLL_PER_SCENE_VH = 140;
+/** Scroll distance given to each life stage, as a share of the screen content's height. */
+const SCROLL_PER_SCENE = 1.4;
 /** How often the small idle loops (blinking stars, flags, rain) advance. */
 const IDLE_FRAME_MS = 420;
-/** The "vivid green" Game Boy palette, darkest to lightest. */
-const PALETTE = ["#0b2613", "#2f6a3b", "#8dc455", "#eaf7cc"];
 /** How long a scene's middle action step shows before its last step. */
 const ACTION_STEP_MS = 180;
+/** How long the "scroll to play" hint shows when the timeline opens. */
+const SCROLL_HINT_MS = 2200;
 
-export function PixelJourney() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const progress = useScrollProgress(sectionRef);
+/**
+ * The life timeline, as the content of the Game Boy screen: a box that
+ * scrolls inside itself with the scene pinned at its top while the scroll
+ * walks through the scenes, so the page's own scrollbar never grows.
+ * `header` sits above the scene.
+ */
+export function PixelJourney({ header }: { header?: ReactNode }) {
+  const scrollerRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const contentHeight = useElementHeight(contentRef);
+  const progress = useScrollProgress(scrollerRef);
   const reduceMotion = usePrefersReducedMotion();
   const frame = useIdleFrame(!reduceMotion);
   const { index, sceneProgress } = locateScene(progress);
   const pose = useActionPose(lifeStages[index].key, sceneProgress >= ACTION_TRIGGER, reduceMotion);
+  const hintTimedOut = useTimeout(SCROLL_HINT_MS);
 
   return (
     <section
-      ref={sectionRef}
-      style={{ height: `${lifeStages.length * SCROLL_PER_SCENE_VH}vh` }}
-      className="relative w-full"
+      ref={scrollerRef}
+      // Exactly as tall as its content, so no empty band shows above or below it.
+      style={{ height: contentHeight || undefined }}
+      className="relative w-full overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
       <StageList />
-      <div
-        aria-hidden
-        className="sticky top-0 flex h-svh items-center justify-center pt-4 pb-20 lg:pb-4"
-      >
-        <HandheldConsole>
-          <SceneScreen
-            activeIndex={index}
-            frame={frame}
-            sceneProgress={sceneProgress}
-            pose={pose}
-          />
+      <div ref={contentRef} className="sticky top-0 flex flex-col gap-3">
+        {header}
+        {/* The stage list above already reads the scenes out for screen readers. */}
+        <div aria-hidden className="flex flex-col gap-3">
+          <div className="relative">
+            <SceneScreen
+              activeIndex={index}
+              frame={frame}
+              sceneProgress={sceneProgress}
+              pose={pose}
+            />
+            {/* Gone after a moment, or as soon as the reader starts scrolling. */}
+            <ScrollHint visible={!hintTimedOut && progress === 0} />
+          </div>
           <SceneDialog index={index} />
-        </HandheldConsole>
+        </div>
       </div>
+      {/* Scroll room after the pinned content: one share per scene, minus the first screen. */}
+      <div aria-hidden style={{ height: contentHeight * (lifeStages.length * SCROLL_PER_SCENE - 1) }} />
     </section>
   );
 }
 
 // ==================== 진행: 스크롤 위치를 장면과 장면 안 진행도로 바꾸기 ====================
+
+/** The element's current height in pixels, following resizes; 0 until measured. */
+function useElementHeight(ref: RefObject<HTMLElement | null>) {
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    const observer = new ResizeObserver(([entry]) => setHeight(entry.borderBoxSize[0].blockSize));
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [ref]);
+
+  return height;
+}
 
 function locateScene(progress: number) {
   const position = progress * lifeStages.length;
@@ -62,6 +92,18 @@ function locateScene(progress: number) {
 }
 
 /** Counts 0–3 on a timer for the scenes' small idle loops; stays at 0 when disabled. */
+/** Turns true once `ms` have passed since mount. */
+function useTimeout(ms: number) {
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    const id = setTimeout(() => setDone(true), ms);
+    return () => clearTimeout(id);
+  }, [ms]);
+
+  return done;
+}
+
 function useIdleFrame(enabled: boolean) {
   const [frame, setFrame] = useState(0);
 
@@ -99,16 +141,24 @@ function useActionPose(key: LifeStageKey, triggered: boolean, reduceMotion: bool
 
 // ==================== 화면: 장면마다 캔버스 하나, 바뀔 때 페이드 ====================
 
-function HandheldConsole({ children }: { children: React.ReactNode }) {
+/** A mouse with a rolling wheel and a short line, telling the reader to scroll. */
+function ScrollHint({ visible }: { visible: boolean }) {
   return (
     <div
-      style={{ width: "min(100%, 480px, calc((100svh - 260px) * 1.11 + 32px))" }}
-      className="flex flex-col gap-3 rounded-[14px_14px_40px_14px] bg-[#b9b7c6] p-4 pb-3"
+      className={cn(
+        "pointer-events-none absolute inset-0 flex items-center justify-center transition-opacity duration-500",
+        visible ? "opacity-100" : "opacity-0",
+      )}
     >
-      {children}
-      <span className={cn(dotGothic.className, "text-xs tracking-widest text-[#4b4760]")}>
-        DOHYUK · LIFE
-      </span>
+      <div className="flex items-center gap-3 rounded-sm border-[3px] border-[#eaf7cc] bg-[#0b2613]/90 px-4 py-3 text-[#eaf7cc]">
+        <span className="flex h-8 w-5 justify-center rounded-full border-2 border-[#eaf7cc] pt-1.5">
+          <span className="h-2 w-1 rounded-full bg-[#eaf7cc] motion-safe:animate-bounce" />
+        </span>
+        <span className="flex flex-col">
+          <span className={cn(dotGothic.className, "text-sm tracking-[0.12em]")}>SCROLL</span>
+          <span className="text-xs">스크롤하면 장면이 넘어가요</span>
+        </span>
+      </div>
     </div>
   );
 }
@@ -129,7 +179,7 @@ function SceneScreen({
   useEffect(() => {
     const canvas = canvasRefs.current[activeIndex];
     if (!canvas) return;
-    paint(canvas, drawScene(lifeStages[activeIndex].key, frame, pose));
+    paintGrid(canvas, drawScene(lifeStages[activeIndex].key, frame, pose));
   }, [activeIndex, frame, pose]);
 
   return (
@@ -153,34 +203,33 @@ function SceneScreen({
   );
 }
 
-function paint(canvas: HTMLCanvasElement, grid: Grid<Shade>) {
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
-  const image = ctx.createImageData(grid.w, grid.h);
-  const rgb = PALETTE.map((hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)));
-  grid.px.forEach((shade, i) => {
-    const [r, g, b] = rgb[shade ?? PAPER];
-    image.data.set([r, g, b, 255], i * 4);
-  });
-  ctx.putImageData(image, 0, 0);
-}
-
 // ==================== 글: 대화창과 스크린리더용 목록 ====================
 
+/**
+ * The caption under the screen. Every stage's text is laid in the same grid
+ * cell and only the current one is shown, so the box always keeps the height
+ * of the longest caption: a height that changed per stage would change the
+ * timeline's scroll length and make the scenes jump while scrolling.
+ */
 function SceneDialog({ index }: { index: number }) {
-  const stage = lifeStages[index];
-
   return (
-    <div
-      key={stage.key}
-      className="flex min-h-24 animate-in flex-col gap-0.5 rounded-sm border-[3px] border-[#0b2613] bg-[#eaf7cc] px-3.5 py-2.5 text-[#0b2613] duration-300 fade-in motion-reduce:animate-none"
-    >
-      <span className={cn(dotGothic.className, "text-xs tracking-[0.08em] opacity-80")}>
-        STEP {String(index + 1).padStart(2, "0")}
-        {stage.period && ` · ${stage.period}`}
-      </span>
-      <span className="text-base font-bold">{stage.title}</span>
-      <span className="text-[13px] leading-normal">{stage.description}</span>
+    <div className="grid rounded-sm border-[3px] border-[#0b2613] bg-[#eaf7cc] px-3.5 py-2.5 text-[#0b2613]">
+      {lifeStages.map((stage, i) => (
+        <div
+          key={stage.key}
+          className={cn(
+            "col-start-1 row-start-1 flex flex-col gap-0.5",
+            i === index ? "animate-in duration-300 fade-in motion-reduce:animate-none" : "invisible",
+          )}
+        >
+          <span className={cn(dotGothic.className, "text-xs tracking-[0.08em] opacity-80")}>
+            STEP {String(i + 1).padStart(2, "0")}
+            {stage.period && ` · ${stage.period}`}
+          </span>
+          <span className="text-base font-bold">{stage.title}</span>
+          <span className="text-[13px] leading-normal whitespace-pre-line">{stage.description}</span>
+        </div>
+      ))}
     </div>
   );
 }

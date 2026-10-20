@@ -95,3 +95,19 @@ export function text(g: Grid<Shade>, x: number, y: number, str: string, v: Shade
     left += glyph[0].length + 1;
   }
 }
+
+/** The "vivid green" Game Boy palette, darkest to lightest. */
+export const PALETTE = ["#0b2613", "#2f6a3b", "#8dc455", "#eaf7cc"] as const;
+
+/** Paints a grid onto a canvas of the same size; empty pixels show the lightest shade. */
+export function paintGrid(canvas: HTMLCanvasElement, grid: Grid<Shade>) {
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+  const image = ctx.createImageData(grid.w, grid.h);
+  const rgb = PALETTE.map((hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)));
+  grid.px.forEach((shade, i) => {
+    const [r, g, b] = rgb[shade ?? PAPER];
+    image.data.set([r, g, b, 255], i * 4);
+  });
+  ctx.putImageData(image, 0, 0);
+}
