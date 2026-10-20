@@ -30,8 +30,8 @@ import {
 } from "@/components/ui/sidebar";
 
 const navItems = [
-  { title: "Portfolio", url: "/", icon: FolderKanban },
   { title: "Profile", url: "/profile", icon: IdCard },
+  { title: "Portfolio", url: "/", icon: FolderKanban },
   { title: "Calendar", url: "/calendar", icon: ListTodo },
 ];
 
